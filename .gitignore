@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.so
 .Python
+.python-version
 build/
 develop-eggs/
 dist/
@@ -43,6 +44,22 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.vite/
+
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/
+
+# TypeScript
+*.tsbuildinfo
+
+# Linter caches
+.eslintcache
+.prettiercache
+
+# Vitest coverage
+coverage/
 
 # Build outputs
 dist/
@@ -68,6 +85,9 @@ Thumbs.db
 
 # Cosmos DB Emulator
 *.pem
+*.key
+*.p12
+*.pfx
 
 # Ruff
 .ruff_cache/
