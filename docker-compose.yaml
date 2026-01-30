@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  # Azure Cosmos DB Emulator
+  cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    container_name: deduptickets-cosmosdb
+    ports:
+      - "8081:8081"
+      - "10251:10251"
+      - "10252:10252"
+      - "10253:10253"
+      - "10254:10254"
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+    volumes:
+      - cosmosdb_data:/data/db
+    mem_limit: 3g
+    cpu_count: 2
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost:8081/_explorer/emulator.pem"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: deduptickets-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - COSMOS_ENDPOINT=https://cosmosdb:8081
+      - COSMOS_KEY=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
+      - COSMOS_DATABASE=deduptickets
+      - COSMOS_SSL_VERIFY=false
+      - API_KEY=dev-api-key-change-in-production
+      - LOG_LEVEL=INFO
+    depends_on:
+      cosmosdb:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src:ro
+    restart: unless-stopped
+
+  # Frontend Dev Server
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: deduptickets-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src:ro
+    restart: unless-stopped
+
+volumes:
+  cosmosdb_data:
