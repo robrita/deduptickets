@@ -52,7 +52,7 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
           <div className="border-b border-gray-200 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-900">Revert Merge Operation</h2>
             <p className="mt-1 text-sm text-gray-500">
-              This will restore {merge.secondary_ticket_ids.length} tickets to their original state.
+              This will restore {merge.secondaryTicketIds.length} tickets to their original state.
             </p>
           </div>
 
@@ -65,15 +65,15 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
                 <dl className="mt-2 space-y-1 text-sm">
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Performed by:</dt>
-                    <dd className="text-gray-900">{merge.performed_by}</dd>
+                    <dd className="text-gray-900">{merge.performedBy}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Performed at:</dt>
-                    <dd className="text-gray-900">{formatDate(merge.performed_at)}</dd>
+                    <dd className="text-gray-900">{formatDate(merge.performedAt)}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Tickets merged:</dt>
-                    <dd className="text-gray-900">{merge.secondary_ticket_ids.length}</dd>
+                    <dd className="text-gray-900">{merge.secondaryTicketIds.length}</dd>
                   </div>
                 </dl>
               </div>

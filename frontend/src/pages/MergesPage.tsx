@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MergeHistoryItem } from '../components/merges/MergeHistoryItem';
 import { RevertConfirmDialog } from '../components/merges/RevertConfirmDialog';
 import type { MergeOperation, RevertConflict } from '../types';
@@ -12,7 +13,12 @@ import { mergeService } from '../services/mergeService';
 
 type FilterStatus = 'all' | 'completed' | 'reverted' | 'revertible';
 
-export const MergesPage: React.FC = () => {
+interface MergesPageProps {
+  month: string;
+}
+
+export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
+  const navigate = useNavigate();
   const [merges, setMerges] = useState<MergeOperation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,18 +30,12 @@ export const MergesPage: React.FC = () => {
   const [isReverting, setIsReverting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Get partition key from URL or defaults
-  const region = new URLSearchParams(window.location.search).get('region') || 'US';
-  const month =
-    new URLSearchParams(window.location.search).get('month') ||
-    new Date().toISOString().slice(0, 7);
-
   const loadMerges = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const revertibleOnly = filterStatus === 'revertible';
-      const data = await mergeService.listMerges(region, month, 1, 50, revertibleOnly);
+      const data = await mergeService.listMerges(month, 1, 50, revertibleOnly);
 
       let filtered = data.data;
       if (filterStatus === 'completed') {
@@ -50,7 +50,7 @@ export const MergesPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [region, month, filterStatus]);
+  }, [month, filterStatus]);
 
   useEffect(() => {
     loadMerges();
@@ -62,7 +62,7 @@ export const MergesPage: React.FC = () => {
 
     // Check for conflicts
     try {
-      const conflictCheck = await mergeService.checkRevertConflicts(merge.id, region, month);
+      const conflictCheck = await mergeService.checkRevertConflicts(merge.id, month);
       setConflicts(conflictCheck);
     } catch (err) {
       // If conflict check fails, still show dialog without conflict info
@@ -75,7 +75,7 @@ export const MergesPage: React.FC = () => {
 
     setIsReverting(true);
     try {
-      await mergeService.revertMerge(selectedMerge.id, region, month, reason);
+      await mergeService.revertMerge(selectedMerge.id, month, reason);
       setIsDialogOpen(false);
       setSelectedMerge(null);
       setConflicts(null);
@@ -95,8 +95,7 @@ export const MergesPage: React.FC = () => {
   };
 
   const handleViewDetails = (merge: MergeOperation) => {
-    // Navigate to merge detail view
-    window.location.href = `/merges/${merge.id}?region=${region}&month=${month}`;
+    navigate(`/merges/${merge.id}`);
   };
 
   const filterOptions: { value: FilterStatus; label: string }[] = [
@@ -119,9 +118,6 @@ export const MergesPage: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500">
-                Region: {region} | Month: {month}
-              </span>
               <button
                 onClick={loadMerges}
                 disabled={isLoading}

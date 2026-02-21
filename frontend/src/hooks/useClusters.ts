@@ -26,14 +26,14 @@ export interface UseClustersResult {
   refresh: () => Promise<void>;
 }
 
-export function useClusters(region: string = 'US', month?: string): UseClustersResult {
+export function useClusters(month?: string): UseClustersResult {
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<ClusterDetail | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [filters, setFilters] = useState<ClusterFilters>({ region, month });
+  const [filters, setFilters] = useState<ClusterFilters>({ month });
 
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
@@ -45,20 +45,19 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
       const [listResponse, countResponse] = await Promise.all([
         clusterService.list({
           ...filters,
-          region,
           month: currentMonth,
         }),
-        clusterService.getPendingCount(region, currentMonth),
+        clusterService.getPendingCount(currentMonth),
       ]);
 
       setClusters(listResponse.data);
-      setPendingCount(countResponse.pending_count);
+      setPendingCount(countResponse.pendingCount);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to load clusters'));
     } finally {
       setIsLoading(false);
     }
-  }, [region, currentMonth, filters]);
+  }, [currentMonth, filters]);
 
   const selectCluster = useCallback(
     async (clusterId: string | null) => {
@@ -69,7 +68,7 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
 
       setIsLoadingDetail(true);
       try {
-        const detail = await clusterService.get(clusterId, region, currentMonth);
+        const detail = await clusterService.get(clusterId, currentMonth);
         setSelectedCluster(detail);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to load cluster'));
@@ -77,13 +76,13 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
         setIsLoadingDetail(false);
       }
     },
-    [region, currentMonth]
+    [currentMonth]
   );
 
   const dismissCluster = useCallback(
     async (clusterId: string, reason?: string) => {
       try {
-        await clusterService.dismiss(clusterId, { reason }, region, currentMonth);
+        await clusterService.dismiss(clusterId, { reason }, currentMonth);
         await fetchClusters();
         if (selectedCluster?.id === clusterId) {
           setSelectedCluster(null);
@@ -93,7 +92,7 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
         throw err;
       }
     },
-    [region, currentMonth, fetchClusters, selectedCluster?.id]
+    [currentMonth, fetchClusters, selectedCluster?.id]
   );
 
   const mergeCluster = useCallback(
@@ -103,11 +102,10 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
       try {
         await mergeService.createMerge(
           {
-            cluster_id: selectedCluster.id,
-            primary_ticket_id: primaryTicketId,
-            merge_behavior: 'keep_latest',
+            clusterId: selectedCluster.id,
+            primaryTicketId: primaryTicketId,
+            mergeBehavior: 'keep_latest',
           },
-          region,
           currentMonth
         );
         await fetchClusters();
@@ -117,7 +115,7 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
         throw err;
       }
     },
-    [selectedCluster, region, currentMonth, fetchClusters]
+    [selectedCluster, currentMonth, fetchClusters]
   );
 
   const removeTicketFromCluster = useCallback(
@@ -128,7 +126,6 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
         const updated = await clusterService.removeMember(
           selectedCluster.id,
           ticketId,
-          region,
           currentMonth
         );
 
@@ -144,12 +141,20 @@ export function useClusters(region: string = 'US', month?: string): UseClustersR
         throw err;
       }
     },
-    [selectedCluster, region, currentMonth, fetchClusters, selectCluster]
+    [selectedCluster, currentMonth, fetchClusters, selectCluster]
   );
 
   const refresh = useCallback(async () => {
     await fetchClusters();
   }, [fetchClusters]);
+
+  // Sync month from parent when prop changes
+  useEffect(() => {
+    setFilters(prev => {
+      if (prev.month === currentMonth) return prev;
+      return { ...prev, month: currentMonth };
+    });
+  }, [currentMonth]);
 
   // Initial load
   useEffect(() => {

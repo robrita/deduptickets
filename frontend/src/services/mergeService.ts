@@ -8,7 +8,6 @@ import { api } from './api';
 import type { MergeOperation, MergeRequest, PaginatedResponse, RevertConflict } from '../types';
 
 export interface MergeListParams {
-  region?: string;
   month?: string;
   page?: number;
   limit?: number;
@@ -24,13 +23,12 @@ export interface RevertRequest {
  */
 export async function createMerge(
   request: MergeRequest,
-  region: string = 'US',
   month?: string
 ): Promise<MergeOperation> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.post<MergeOperation>('/merges', request, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 
@@ -38,7 +36,6 @@ export async function createMerge(
  * List merge operations with optional filtering.
  */
 export async function listMerges(
-  region: string = 'US',
   month?: string,
   page: number = 1,
   limit: number = 20,
@@ -49,7 +46,6 @@ export async function listMerges(
 
   return api.get<PaginatedResponse<MergeOperation>>('/merges', {
     params: {
-      region,
       month: currentMonth,
       offset,
       limit,
@@ -63,13 +59,12 @@ export async function listMerges(
  */
 export async function getMerge(
   mergeId: string,
-  region: string = 'US',
   month?: string
 ): Promise<MergeOperation> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<MergeOperation>(`/merges/${mergeId}`, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 
@@ -78,7 +73,6 @@ export async function getMerge(
  */
 export async function revertMerge(
   mergeId: string,
-  region: string = 'US',
   month?: string,
   reason?: string
 ): Promise<MergeOperation> {
@@ -88,7 +82,7 @@ export async function revertMerge(
     `/merges/${mergeId}/revert`,
     { reason },
     {
-      params: { region, month: currentMonth },
+      params: { month: currentMonth },
     }
   );
 }
@@ -98,13 +92,12 @@ export async function revertMerge(
  */
 export async function checkRevertConflicts(
   mergeId: string,
-  region: string = 'US',
   month?: string
 ): Promise<RevertConflict[]> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<RevertConflict[]>(`/merges/${mergeId}/conflicts`, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 

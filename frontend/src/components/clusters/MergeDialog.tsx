@@ -5,11 +5,10 @@
  */
 
 import { useState } from 'react';
-import type { MergeBehavior, Ticket } from '../../types';
-import { TicketPreview } from '../shared/TicketPreview';
+import type { ClusterMember, MergeBehavior } from '../../types';
 
 export interface MergeDialogProps {
-  tickets: Ticket[];
+  members: ClusterMember[];
   selectedTicketId: string;
   onConfirm: (behavior: MergeBehavior) => void;
   onCancel: () => void;
@@ -35,7 +34,7 @@ const mergeBehaviorOptions: { value: MergeBehavior; label: string; description: 
 ];
 
 export function MergeDialog({
-  tickets,
+  members,
   selectedTicketId,
   onConfirm,
   onCancel,
@@ -43,10 +42,10 @@ export function MergeDialog({
 }: MergeDialogProps) {
   const [behavior, setBehavior] = useState<MergeBehavior>('keep_latest');
 
-  const selectedTicket = tickets.find(t => t.id === selectedTicketId);
-  const otherTickets = tickets.filter(t => t.id !== selectedTicketId);
+  const selectedMember = members.find(m => m.ticketId === selectedTicketId);
+  const otherMembers = members.filter(m => m.ticketId !== selectedTicketId);
 
-  if (!selectedTicket) return null;
+  if (!selectedMember) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -55,7 +54,7 @@ export function MergeDialog({
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="text-lg font-semibold text-gray-900">Confirm Merge</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Merge {tickets.length} tickets into a single primary ticket
+            Merge {members.length} tickets into a single primary ticket
           </p>
         </div>
 
@@ -66,24 +65,32 @@ export function MergeDialog({
             <h3 className="mb-2 text-sm font-medium text-gray-700">
               Primary Ticket (will be kept)
             </h3>
-            <TicketPreview ticket={selectedTicket} isCanonical />
+            <div className="rounded-lg border border-green-500 bg-green-50 p-3">
+              <div className="flex items-center gap-2">
+                <h4 className="truncate font-medium text-gray-900">
+                  {selectedMember.summary || 'No summary'}
+                </h4>
+                <span className="flex-shrink-0 rounded bg-green-500 px-1.5 py-0.5 text-xs font-medium text-white">
+                  Primary
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">{selectedMember.ticketNumber}</p>
+            </div>
           </div>
 
           {/* Duplicates */}
           <div className="mb-6">
             <h3 className="mb-2 text-sm font-medium text-gray-700">
-              Duplicates ({otherTickets.length} tickets will be merged)
+              Duplicates ({otherMembers.length} tickets will be merged)
             </h3>
             <div className="max-h-40 space-y-2 overflow-y-auto">
-              {otherTickets.map(ticket => (
+              {otherMembers.map(member => (
                 <div
-                  key={ticket.id}
+                  key={member.ticketId}
                   className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
                 >
-                  <p className="font-medium text-gray-900">{ticket.summary}</p>
-                  <p className="text-xs text-gray-500">
-                    {ticket.channel} • {ticket.ticket_number}
-                  </p>
+                  <p className="font-medium text-gray-900">{member.summary || 'No summary'}</p>
+                  <p className="text-xs text-gray-500">{member.ticketNumber}</p>
                 </div>
               ))}
             </div>

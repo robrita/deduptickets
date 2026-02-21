@@ -8,9 +8,7 @@ A single-page application for support agents and team leads to:
 - **Review clusters** of potential duplicate tickets
 - **Merge duplicates** into a primary ticket
 - **Revert merges** when mistakes are made
-- **Monitor spikes** in ticket volume
-- **Analyze trends** and top issue drivers
-- **Audit all operations** for compliance
+- **Track operational health** from the dashboard
 
 ## Tech Stack
 
@@ -27,20 +25,16 @@ A single-page application for support agents and team leads to:
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── audit/            # AuditLog component
 │   │   ├── clusters/         # ClusterCard, ClusterList, MergeDialog
 │   │   ├── merges/           # MergeHistoryItem, RevertConfirmDialog
 │   │   ├── shared/           # ConfidenceBadge, TicketPreview
-│   │   ├── spikes/           # SpikeAlertCard, SpikeDrilldown
-│   │   └── trends/           # TopDrivers, TrendChart
+│   │   └── tickets/          # Ticket list/table components
 │   ├── hooks/                # Custom React hooks
 │   ├── pages/
-│   │   ├── AuditPage.tsx     # Audit trail with search
 │   │   ├── ClustersPage.tsx  # Cluster review dashboard
 │   │   ├── Dashboard.tsx     # Summary widgets
 │   │   ├── MergesPage.tsx    # Merge history with revert
-│   │   ├── SpikesPage.tsx    # Active spike alerts
-│   │   └── TrendsPage.tsx    # Trend analysis views
+│   │   └── TicketsPage.tsx   # Ticket browsing and filtering
 │   ├── services/             # API client services
 │   ├── types/                # TypeScript interfaces
 │   ├── App.tsx               # Root component with routing
@@ -107,9 +101,8 @@ npm run test:e2e
 
 Summary widgets showing:
 - Pending cluster count with link to review
-- Active spike alerts with severity
-- Products tracked with trend link
-- Quick audit trail access
+- Open and total ticket counts
+- Merge operation count and recent activity
 
 ### Clusters (`/clusters`)
 
@@ -125,29 +118,6 @@ Summary widgets showing:
 - Status indicators (Completed/Reverted)
 - Revert button with confirmation dialog
 - Conflict warnings for post-merge changes
-
-### Spikes (`/spikes`)
-
-- Active spike alerts by region/month
-- Severity indicators (Low/Medium/High)
-- Deviation percentage display
-- Drilldown to affected clusters
-- Acknowledge and resolve actions
-
-### Trends (`/trends`)
-
-- Tab navigation: Top Drivers | Fastest Growing | Most Duplicated
-- Ranked driver list with cluster counts
-- Growth percentage indicators
-- Simple bar chart visualization
-
-### Audit (`/audit`)
-
-- Searchable audit log
-- Filter by entity type, action, user
-- Date range selection
-- Expandable change details
-- Pagination for large result sets
 
 ## Components
 
@@ -173,26 +143,6 @@ Summary widgets showing:
 |-----------|---------|
 | `MergeHistoryItem` | Single merge operation display |
 | `RevertConfirmDialog` | Confirmation modal with conflict warnings |
-
-### Spike Components
-
-| Component | Purpose |
-|-----------|---------|
-| `SpikeAlertCard` | Alert card with severity and deviation |
-| `SpikeDrilldown` | Detail modal with linked clusters |
-
-### Trend Components
-
-| Component | Purpose |
-|-----------|---------|
-| `TopDrivers` | Ranked list of issue drivers |
-| `TrendChart` | Simple bar visualization |
-
-### Audit Components
-
-| Component | Purpose |
-|-----------|---------|
-| `AuditLog` | Filterable log with pagination |
 
 ## Services
 
@@ -251,13 +201,6 @@ const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
   merged: 'bg-green-100 text-green-800',
   dismissed: 'bg-gray-100 text-gray-800',
-};
-
-// Severity colors
-const severityColors = {
-  LOW: 'bg-yellow-100 text-yellow-800',
-  MEDIUM: 'bg-orange-100 text-orange-800',
-  HIGH: 'bg-red-100 text-red-800',
 };
 
 // Confidence colors

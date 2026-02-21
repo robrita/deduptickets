@@ -11,17 +11,14 @@ Provides:
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
 from typing import TYPE_CHECKING, Any
 from unittest.mock import AsyncMock, MagicMock
-from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 
-from deduptickets.config import Settings
-from deduptickets.models.ticket import Ticket
+from config import Settings
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator, Generator
@@ -53,6 +50,10 @@ def test_settings() -> Settings:
         cosmos_database="test-db",
         cosmos_ssl_verify=False,
         api_key="test-api-key",
+        azure_openai_endpoint="https://test.openai.azure.com",
+        azure_openai_use_aad=False,
+        azure_openai_key="test-openai-key",
+        azure_openai_embedding_deployment="text-embedding-3-small",
         debug=True,
         log_level="DEBUG",
     )
@@ -83,7 +84,7 @@ def mock_cosmos_client_manager(mock_container: AsyncMock) -> Generator[MagicMock
     """Mock the CosmosClientManager."""
     from unittest.mock import patch  # noqa: PLC0415
 
-    with patch("deduptickets.cosmos.client.CosmosClientManager") as mock_manager:
+    with patch("cosmos.client.CosmosClientManager") as mock_manager:
         mock_manager.get_container = AsyncMock(return_value=mock_container)
         mock_manager.health_check = AsyncMock(return_value=True)
         mock_manager.initialize = AsyncMock()
@@ -104,11 +105,11 @@ def sync_client(
     """Create a synchronous test client."""
     from unittest.mock import patch  # noqa: PLC0415
 
-    from deduptickets.main import create_app  # noqa: PLC0415
+    from main import create_app  # noqa: PLC0415
 
     with (
-        patch("deduptickets.config.get_settings", return_value=test_settings),
-        patch("deduptickets.dependencies.get_cached_settings", return_value=test_settings),
+        patch("config.get_settings", return_value=test_settings),
+        patch("dependencies.get_cached_settings", return_value=test_settings),
     ):
         app = create_app()
         with TestClient(app) as client:
@@ -123,11 +124,11 @@ async def async_client(
     """Create an async test client."""
     from unittest.mock import patch  # noqa: PLC0415
 
-    from deduptickets.main import create_app  # noqa: PLC0415
+    from main import create_app  # noqa: PLC0415
 
     with (
-        patch("deduptickets.config.get_settings", return_value=test_settings),
-        patch("deduptickets.dependencies.get_cached_settings", return_value=test_settings),
+        patch("config.get_settings", return_value=test_settings),
+        patch("dependencies.get_cached_settings", return_value=test_settings),
     ):
         app = create_app()
         async with AsyncClient(
@@ -143,71 +144,6 @@ def auth_headers(test_settings: Settings) -> dict[str, str]:
     return {
         "X-API-Key": test_settings.api_key.get_secret_value(),
         "X-User-ID": "test-user",
-    }
-
-
-# =============================================================================
-# Model Factory Fixtures
-# =============================================================================
-
-
-@pytest.fixture
-def ticket_factory() -> type:
-    """Factory for creating test tickets."""
-
-    class TicketFactory:
-        @staticmethod
-        def create(
-            *,
-            source_id: str | None = None,
-            source_system: str = "test-system",
-            title: str = "Test Ticket",
-            description: str = "Test description",
-            severity: str = "medium",
-            product: str = "test-product",
-            region: str = "us-east",
-            cluster_id: str | None = None,
-        ) -> Ticket:
-            now = datetime.utcnow()
-            pk = f"{region}|{now.strftime('%Y-%m')}"
-            return Ticket(
-                id=uuid4(),
-                source_id=source_id or f"SRC-{uuid4().hex[:8]}",
-                source_system=source_system,
-                title=title,
-                description=description,
-                severity=severity,
-                product=product,
-                region=region,
-                cluster_id=cluster_id,
-                created_at=now,
-                pk=pk,
-            )
-
-        @staticmethod
-        def create_batch(count: int, **kwargs: Any) -> list[Ticket]:
-            return [TicketFactory.create(**kwargs) for _ in range(count)]
-
-    return TicketFactory
-
-
-@pytest.fixture
-def sample_ticket(ticket_factory: type) -> Ticket:
-    """Create a sample ticket for tests."""
-    return ticket_factory.create()
-
-
-@pytest.fixture
-def sample_ticket_dict() -> dict[str, Any]:
-    """Create a sample ticket as dict for API requests."""
-    return {
-        "source_id": f"SRC-{uuid4().hex[:8]}",
-        "source_system": "test-system",
-        "title": "Test Ticket Title",
-        "description": "This is a test ticket description with enough content.",
-        "severity": "medium",
-        "product": "test-product",
-        "region": "us-east",
     }
 
 

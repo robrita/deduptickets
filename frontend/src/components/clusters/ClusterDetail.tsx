@@ -6,15 +6,13 @@
 
 import { useState } from 'react';
 import type { ClusterDetail as ClusterDetailType } from '../../types';
-import { ConfidenceBadge } from '../shared/ConfidenceBadge';
-import { TicketPreview } from '../shared/TicketPreview';
 import { MergeDialog } from './MergeDialog';
 
 export interface ClusterDetailProps {
   cluster: ClusterDetailType;
   onMerge?: (primaryTicketId: string) => Promise<void>;
-  onDismiss?: () => Promise<void>;
-  onRemoveTicket?: (ticketId: string) => Promise<void>;
+  onDismiss?: () => void;
+  onRemoveTicket?: (ticketId: string) => void;
   onClose?: () => void;
 }
 
@@ -56,26 +54,12 @@ export function ClusterDetail({
     }
   };
 
-  const handleDismiss = async () => {
-    if (!onDismiss) return;
-
-    setIsProcessing(true);
-    try {
-      await onDismiss();
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleDismiss = () => {
+    if (onDismiss) onDismiss();
   };
 
-  const handleRemoveTicket = async (ticketId: string) => {
-    if (!onRemoveTicket) return;
-
-    setIsProcessing(true);
-    try {
-      await onRemoveTicket(ticketId);
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleRemoveTicket = (ticketId: string) => {
+    if (onRemoveTicket) onRemoveTicket(ticketId);
   };
 
   const isPending = cluster.status === 'pending';
@@ -88,11 +72,10 @@ export function ClusterDetail({
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-xl font-semibold text-gray-900">Cluster Details</h2>
-              <ConfidenceBadge level={cluster.confidence} />
             </div>
             <p className="mt-1 text-sm text-gray-600">{cluster.summary}</p>
             <p className="mt-1 text-sm text-gray-500">
-              {cluster.ticket_count} tickets • Created {formatDate(cluster.created_at)}
+              {cluster.ticketCount} tickets • Created {formatDate(cluster.createdAt)}
             </p>
           </div>
 
@@ -111,37 +94,6 @@ export function ClusterDetail({
             </button>
           )}
         </div>
-
-        {/* Matching signals */}
-        {cluster.matching_signals && (
-          <div className="mt-4">
-            <p className="text-xs font-medium uppercase text-gray-500">Matching Signals</p>
-            <div className="mt-1 flex flex-wrap gap-2">
-              {cluster.matching_signals.exact_matches?.map((match, i) => (
-                <span
-                  key={`exact-${i}`}
-                  className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800"
-                >
-                  {match.field}: {match.value}
-                </span>
-              ))}
-              {cluster.matching_signals.field_matches?.map((match, i) => (
-                <span
-                  key={`field-${i}`}
-                  className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800"
-                >
-                  {match.field}
-                </span>
-              ))}
-              {cluster.matching_signals.text_similarity && (
-                <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800">
-                  {Math.round(cluster.matching_signals.text_similarity.score * 100)}% text
-                  similarity
-                </span>
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Tickets */}
@@ -154,17 +106,54 @@ export function ClusterDetail({
         </div>
 
         <div className="space-y-3">
-          {cluster.tickets.map(ticket => (
-            <div key={ticket.id} className="relative">
-              <TicketPreview
-                ticket={ticket}
-                isSelected={ticket.id === selectedTicketId}
-                onSelect={isPending ? handleTicketSelect : undefined}
-              />
-              {isPending && onRemoveTicket && cluster.ticket_count > 2 && (
+          {cluster.members.map(member => (
+            <div key={member.ticketId} className="relative">
+              <div
+                className={`rounded-lg border p-3 transition-colors ${
+                  member.ticketId === selectedTicketId
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                } ${isPending ? 'cursor-pointer' : ''}`}
+                onClick={isPending ? () => handleTicketSelect(member.ticketId) : undefined}
+                role={isPending ? 'button' : undefined}
+                tabIndex={isPending ? 0 : undefined}
+                onKeyDown={isPending ? e => e.key === 'Enter' && handleTicketSelect(member.ticketId) : undefined}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate font-medium text-gray-900">
+                      {member.summary || 'No summary'}
+                    </h4>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                      <span>{member.ticketNumber}</span>
+                      {member.category && (
+                        <>
+                          <span>•</span>
+                          <span>{member.category}</span>
+                        </>
+                      )}
+                      {member.createdAt && (
+                        <>
+                          <span>•</span>
+                          <span>{formatDate(member.createdAt)}</span>
+                        </>
+                      )}
+                      {member.confidenceScore != null && (
+                        <>
+                          <span>•</span>
+                          <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-700">
+                            {Math.round(member.confidenceScore * 100)}% match
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {isPending && onRemoveTicket && cluster.ticketCount > 2 && (
                 <button
                   className="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-red-500"
-                  onClick={() => handleRemoveTicket(ticket.id)}
+                  onClick={() => handleRemoveTicket(member.ticketId)}
                   title="Remove from cluster"
                   disabled={isProcessing}
                 >
@@ -217,7 +206,7 @@ export function ClusterDetail({
       {/* Merge dialog */}
       {showMergeDialog && selectedTicketId && (
         <MergeDialog
-          tickets={cluster.tickets}
+          members={cluster.members}
           selectedTicketId={selectedTicketId}
           onConfirm={handleMerge}
           onCancel={() => setShowMergeDialog(false)}

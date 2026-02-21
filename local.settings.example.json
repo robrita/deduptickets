@@ -1,0 +1,22 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "COSMOS_ENDPOINT": "https://localhost:8081",
+    "COSMOS_USE_AAD": "false",
+    "COSMOS_DATABASE": "deduptickets",
+    "COSMOS_SSL_VERIFY": "false",
+    "AZURE_TENANT_ID": "<your-tenant-id>",
+    "API_KEY": "dev-api-key-change-in-production",
+    "LOG_LEVEL": "INFO",
+    "DEBUG": "true",
+    "REQUEST_TIMEOUT": "30",
+    "AZURE_OPENAI_ENDPOINT": "https://<your-resource>.openai.azure.com/",
+    "AZURE_OPENAI_USE_AAD": "true",
+    "AZURE_OPENAI_EMBEDDING_DEPLOYMENT": "text-embedding-3-small",
+    "DEDUP_FILTER_BY_CUSTOMER": "false",
+    "PROXY_TICKETS_ENDPOINT": "https://<your-logic-app>.azure.com/workflows/..."
+  }
+}

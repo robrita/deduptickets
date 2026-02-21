@@ -4,11 +4,17 @@
  * Main page for viewing and managing duplicate ticket clusters.
  */
 
+import { useState } from 'react';
 import { useClusters } from '../hooks/useClusters';
 import { ClusterList } from '../components/clusters/ClusterList';
 import { ClusterDetail } from '../components/clusters/ClusterDetail';
+import { ConfirmDialog } from '../components/shared/ConfirmDialog';
 
-export function ClustersPage() {
+interface ClustersPageProps {
+  month: string;
+}
+
+export function ClustersPage({ month }: ClustersPageProps) {
   const {
     clusters,
     selectedCluster,
@@ -22,24 +28,47 @@ export function ClustersPage() {
     removeTicketFromCluster,
     refresh,
     setFilters,
-  } = useClusters();
+  } = useClusters(month);
+
+  const [dismissTarget, setDismissTarget] = useState<string | null>(null);
+  const [removeTicketTarget, setRemoveTicketTarget] = useState<string | null>(null);
+  const [isConfirmProcessing, setIsConfirmProcessing] = useState(false);
 
   const handleClusterClick = (clusterId: string) => {
     selectCluster(clusterId);
   };
 
-  const handleDismiss = async (clusterId: string) => {
-    const reason = window.prompt('Reason for dismissal (optional):');
-    await dismissCluster(clusterId, reason || undefined);
+  const handleDismiss = (clusterId: string) => {
+    setDismissTarget(clusterId);
+  };
+
+  const handleDismissConfirm = async (reason?: string) => {
+    if (!dismissTarget) return;
+    setIsConfirmProcessing(true);
+    try {
+      await dismissCluster(dismissTarget, reason || undefined);
+      setDismissTarget(null);
+    } finally {
+      setIsConfirmProcessing(false);
+    }
   };
 
   const handleMerge = async (canonicalTicketId: string) => {
     await mergeCluster(canonicalTicketId);
   };
 
-  const handleRemoveTicket = async (ticketId: string) => {
-    if (window.confirm('Remove this ticket from the cluster?')) {
-      await removeTicketFromCluster(ticketId);
+  const handleRemoveTicket = (ticketId: string) => {
+    setRemoveTicketTarget(ticketId);
+  };
+
+  const handleRemoveTicketConfirm = async () => {
+    if (!removeTicketTarget) return;
+    setIsConfirmProcessing(true);
+    try {
+      await removeTicketFromCluster(removeTicketTarget);
+      setRemoveTicketTarget(null);
+    } finally {
+      setIsConfirmProcessing(false);
     }
   };
 
@@ -47,10 +76,9 @@ export function ClustersPage() {
     selectCluster(null);
   };
 
-  const handleFilterChange = (filters: { status?: string; minConfidence?: number }) => {
+  const handleFilterChange = (filters: { status?: string }) => {
     setFilters({
       status: filters.status as 'pending' | 'merged' | 'dismissed' | undefined,
-      min_confidence: filters.minConfidence,
     });
   };
 
@@ -101,12 +129,16 @@ export function ClustersPage() {
 
       {/* Main content */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex gap-6">
+        <div className="flex gap-6 transition-all duration-200">
           {/* Cluster list */}
-          <div className={selectedCluster ? 'w-1/2' : 'w-full'}>
+          <div
+            className={`transition-all duration-200 ${selectedCluster ? 'w-1/2' : 'w-full'}`}
+          >
             <ClusterList
               clusters={clusters}
               isLoading={isLoading}
+              compact={Boolean(selectedCluster)}
+              selectedClusterId={selectedCluster?.id ?? null}
               onClusterClick={handleClusterClick}
               onDismiss={handleDismiss}
               onFilterChange={handleFilterChange}
@@ -115,7 +147,7 @@ export function ClustersPage() {
 
           {/* Cluster detail panel */}
           {selectedCluster && (
-            <div className="w-1/2">
+            <div className="w-1/2 transition-all duration-200">
               <div className="sticky top-6 rounded-lg border border-gray-200 bg-white shadow-lg">
                 {isLoadingDetail ? (
                   <div className="flex items-center justify-center py-12">
@@ -125,7 +157,7 @@ export function ClustersPage() {
                   <ClusterDetail
                     cluster={selectedCluster}
                     onMerge={handleMerge}
-                    onDismiss={() => dismissCluster(selectedCluster.id)}
+                    onDismiss={() => handleDismiss(selectedCluster.id)}
                     onRemoveTicket={handleRemoveTicket}
                     onClose={handleClose}
                   />
@@ -135,6 +167,32 @@ export function ClustersPage() {
           )}
         </div>
       </main>
+
+      {/* Dismiss confirmation dialog */}
+      <ConfirmDialog
+        isOpen={dismissTarget !== null}
+        title="Dismiss Cluster"
+        message="Are you sure you want to dismiss this cluster? Dismissed clusters will no longer appear in the pending review queue."
+        confirmLabel="Dismiss"
+        variant="warning"
+        isLoading={isConfirmProcessing}
+        reasonLabel="Reason for dismissal (optional)"
+        reasonPlaceholder="Explain why this cluster is being dismissed..."
+        onConfirm={handleDismissConfirm}
+        onCancel={() => setDismissTarget(null)}
+      />
+
+      {/* Remove ticket confirmation dialog */}
+      <ConfirmDialog
+        isOpen={removeTicketTarget !== null}
+        title="Remove Ticket"
+        message="Are you sure you want to remove this ticket from the cluster? The ticket will no longer be grouped with these duplicates."
+        confirmLabel="Remove"
+        variant="danger"
+        isLoading={isConfirmProcessing}
+        onConfirm={handleRemoveTicketConfirm}
+        onCancel={() => setRemoveTicketTarget(null)}
+      />
     </div>
   );
 }

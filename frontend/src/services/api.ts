@@ -8,7 +8,7 @@ import type { ApiError } from '../types';
 
 const API_BASE_URL =
   (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_URL ||
-  'http://localhost:8000/api/v1';
+  '/api/v1';
 const API_KEY =
   (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_KEY ||
   'dev-api-key-change-in-production';
@@ -31,11 +31,12 @@ interface RequestOptions extends RequestInit {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorDetail = 'Unknown error';
+    const text = await response.text();
     try {
-      const errorData: ApiError = await response.json();
+      const errorData: ApiError = JSON.parse(text);
       errorDetail = errorData.message || errorDetail;
     } catch {
-      errorDetail = await response.text();
+      errorDetail = text || errorDetail;
     }
 
     throw new ApiClientError(
@@ -52,7 +53,10 @@ function buildUrl(
   endpoint: string,
   params?: Record<string, string | number | boolean | undefined>
 ): string {
-  const url = new URL(`${API_BASE_URL}${endpoint}`);
+  const path = `${API_BASE_URL}${endpoint}`;
+  const url = path.startsWith('http')
+    ? new URL(path)
+    : new URL(path, window.location.origin);
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {

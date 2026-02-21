@@ -38,13 +38,13 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
 
   const isRevertable = () => {
     if (merge.status !== 'completed') return false;
-    if (!merge.revert_deadline) return true;
-    return new Date(merge.revert_deadline) > new Date();
+    if (!merge.revertDeadline) return true;
+    return new Date(merge.revertDeadline) > new Date();
   };
 
   const getTimeUntilDeadline = () => {
-    if (!merge.revert_deadline) return '';
-    const deadline = new Date(merge.revert_deadline);
+    if (!merge.revertDeadline) return '';
+    const deadline = new Date(merge.revertDeadline);
     const now = new Date();
     const diffMs = deadline.getTime() - now.getTime();
     if (diffMs <= 0) return 'Expired';
@@ -80,32 +80,32 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
             >
               {statusLabels[merge.status] || merge.status}
             </span>
-            <span className="text-sm text-gray-500">{formatRelativeTime(merge.performed_at)}</span>
+            <span className="text-sm text-gray-500">{formatRelativeTime(merge.performedAt)}</span>
           </div>
 
           <div className="mt-2">
             <p className="text-sm text-gray-900">
-              <span className="font-medium">{merge.performed_by}</span> merged{' '}
-              <span className="font-medium">{merge.secondary_ticket_ids.length} tickets</span>
+              <span className="font-medium">{merge.performedBy}</span> merged{' '}
+              <span className="font-medium">{merge.secondaryTicketIds.length} tickets</span>
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              Primary ticket: {merge.primary_ticket_id.slice(0, 8)}...
+              Primary ticket: {merge.primaryTicketId.slice(0, 8)}...
             </p>
           </div>
 
           {/* Reverted info */}
-          {merge.status === 'reverted' && merge.reverted_by && (
+          {merge.status === 'reverted' && merge.revertedBy && (
             <div className="mt-2 text-xs text-gray-500">
               <p>
-                Reverted by {merge.reverted_by}
-                {merge.reverted_at && ` on ${formatDate(merge.reverted_at)}`}
+                Reverted by {merge.revertedBy}
+                {merge.revertedAt && ` on ${formatDate(merge.revertedAt)}`}
               </p>
-              {merge.revert_reason && <p className="mt-1 italic">Reason: {merge.revert_reason}</p>}
+              {merge.revertReason && <p className="mt-1 italic">Reason: {merge.revertReason}</p>}
             </div>
           )}
 
           {/* Revert deadline */}
-          {merge.status === 'completed' && merge.revert_deadline && (
+          {merge.status === 'completed' && merge.revertDeadline && (
             <div className="mt-2">
               <p className={`text-xs ${isRevertable() ? 'text-gray-500' : 'text-red-600'}`}>
                 {isRevertable() ? (

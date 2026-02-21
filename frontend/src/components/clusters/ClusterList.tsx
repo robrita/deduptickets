@@ -11,6 +11,8 @@ import { ClusterCard } from './ClusterCard';
 export interface ClusterListProps {
   clusters: Cluster[];
   isLoading?: boolean;
+  compact?: boolean;
+  selectedClusterId?: string | null;
   onClusterClick?: (clusterId: string) => void;
   onDismiss?: (clusterId: string) => void;
   onFilterChange?: (filters: ClusterListFilters) => void;
@@ -18,7 +20,6 @@ export interface ClusterListProps {
 
 export interface ClusterListFilters {
   status?: ClusterStatus;
-  minConfidence?: number;
 }
 
 const statusOptions: { value: ClusterStatus | ''; label: string }[] = [
@@ -28,16 +29,11 @@ const statusOptions: { value: ClusterStatus | ''; label: string }[] = [
   { value: 'dismissed', label: 'Dismissed' },
 ];
 
-const confidenceOptions = [
-  { value: undefined, label: 'All Confidence' },
-  { value: 0.8, label: 'High (80%+)' },
-  { value: 0.5, label: 'Medium+ (50%+)' },
-  { value: 0.0, label: 'Any' },
-];
-
 export function ClusterList({
   clusters,
   isLoading = false,
+  compact = false,
+  selectedClusterId,
   onClusterClick,
   onDismiss,
   onFilterChange,
@@ -47,14 +43,6 @@ export function ClusterList({
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const status = e.target.value as ClusterStatus | '';
     const newFilters = { ...filters, status: status || undefined };
-    setFilters(newFilters);
-    onFilterChange?.(newFilters);
-  };
-
-  const handleConfidenceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    const minConfidence = value ? parseFloat(value) : undefined;
-    const newFilters = { ...filters, minConfidence };
     setFilters(newFilters);
     onFilterChange?.(newFilters);
   };
@@ -89,27 +77,6 @@ export function ClusterList({
             ))}
           </select>
         </div>
-
-        <div>
-          <label
-            htmlFor="confidence-filter"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Confidence
-          </label>
-          <select
-            id="confidence-filter"
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
-            value={filters.minConfidence ?? ''}
-            onChange={handleConfidenceChange}
-          >
-            {confidenceOptions.map(option => (
-              <option key={option.label} value={option.value ?? ''}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
       {/* Results count */}
@@ -121,11 +88,12 @@ export function ClusterList({
           <p className="text-gray-500">No clusters found</p>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className={compact ? 'grid gap-4 md:grid-cols-1 xl:grid-cols-2' : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'}>
           {clusters.map(cluster => (
             <ClusterCard
               key={cluster.id}
               cluster={cluster}
+              isSelected={selectedClusterId === cluster.id}
               onClick={onClusterClick}
               onDismiss={onDismiss}
             />

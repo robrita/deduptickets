@@ -9,7 +9,7 @@ import type { Cluster, ClusterDetail, ClusterFilters, PaginatedResponse } from '
 
 export interface ClusterListParams extends ClusterFilters {
   page?: number;
-  limit?: number;
+  page_size?: number;
 }
 
 export interface DismissClusterRequest {
@@ -17,21 +17,22 @@ export interface DismissClusterRequest {
 }
 
 export interface ClusterCountResponse {
-  pending_count: number;
+  pendingCount: number;
 }
 
 /**
  * List clusters with optional filtering.
  */
 export async function listClusters(params: ClusterListParams): Promise<PaginatedResponse<Cluster>> {
-  const { region = 'US', month, ...rest } = params;
+  const { month, page = 1, page_size = 20, status } = params;
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<PaginatedResponse<Cluster>>('/clusters', {
     params: {
-      region,
       month: currentMonth,
-      ...rest,
+      page,
+      page_size,
+      status,
     },
   });
 }
@@ -41,25 +42,21 @@ export async function listClusters(params: ClusterListParams): Promise<Paginated
  */
 export async function getCluster(
   clusterId: string,
-  region: string = 'US',
   month?: string
 ): Promise<ClusterDetail> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<ClusterDetail>(`/clusters/${clusterId}`, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 
 /**
  * Get pending cluster count.
  */
-export async function getPendingCount(
-  region?: string,
-  month?: string
-): Promise<ClusterCountResponse> {
+export async function getPendingCount(month?: string): Promise<ClusterCountResponse> {
   return api.get<ClusterCountResponse>('/clusters/pending/count', {
-    params: { region, month },
+    params: { month },
   });
 }
 
@@ -69,13 +66,12 @@ export async function getPendingCount(
 export async function dismissCluster(
   clusterId: string,
   request: DismissClusterRequest,
-  region: string = 'US',
   month?: string
 ): Promise<Cluster> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.post<Cluster>(`/clusters/${clusterId}/dismiss`, request, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 
@@ -85,13 +81,12 @@ export async function dismissCluster(
 export async function removeClusterMember(
   clusterId: string,
   ticketId: string,
-  region: string = 'US',
   month?: string
 ): Promise<Cluster> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.delete<Cluster>(`/clusters/${clusterId}/members/${ticketId}`, {
-    params: { region, month: currentMonth },
+    params: { month: currentMonth },
   });
 }
 

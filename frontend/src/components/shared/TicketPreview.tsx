@@ -88,9 +88,9 @@ export function TicketPreview({
             )}
             <span>{ticket.channel}</span>
             <span>•</span>
-            <span>{ticket.ticket_number}</span>
+            <span>{ticket.ticketNumber}</span>
             <span>•</span>
-            <span>{formatDate(ticket.created_at)}</span>
+            <span>{formatDate(ticket.createdAt)}</span>
           </div>
         </div>
       </div>

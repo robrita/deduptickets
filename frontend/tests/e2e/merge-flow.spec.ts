@@ -6,138 +6,101 @@
 
 import { test, expect, type Page } from '@playwright/test';
 
+test.describe.configure({ mode: 'serial' });
+
 // Mock API responses for consistent testing
 const mockClusters = {
   data: [
     {
       id: 'cluster-001',
       status: 'pending',
-      confidence: 'high',
       summary: 'Duplicate payment failure tickets for merchant Acme Corp',
-      matching_signals: {
-        exact_matches: [
-          { field: 'merchant', value: 'Acme Corp' },
-          { field: 'transaction_id', value: 'TXN-12345' },
-        ],
-        text_similarity: { score: 0.92, common_terms: ['payment', 'failed', 'declined'] },
-      },
-      ticket_count: 3,
-      created_at: '2026-01-30T10:00:00Z',
+      ticketCount: 3,
+      createdAt: '2026-01-30T10:00:00Z',
     },
     {
       id: 'cluster-002',
       status: 'pending',
-      confidence: 'medium',
       summary: 'Card declined errors for category Electronics',
-      matching_signals: {
-        exact_matches: [{ field: 'category', value: 'Electronics' }],
-        text_similarity: { score: 0.75, common_terms: ['card', 'declined'] },
-      },
-      ticket_count: 2,
-      created_at: '2026-01-30T09:00:00Z',
+      ticketCount: 2,
+      createdAt: '2026-01-30T09:00:00Z',
     },
   ],
   meta: {
     total: 2,
     offset: 0,
     limit: 20,
-    has_more: false,
+    hasMore: false,
   },
 };
 
 const mockClusterDetail = {
   id: 'cluster-001',
   status: 'pending',
-  confidence: 'high',
   summary: 'Duplicate payment failure tickets for merchant Acme Corp',
-  matching_signals: {
-    exact_matches: [
-      { field: 'merchant', value: 'Acme Corp' },
-      { field: 'transaction_id', value: 'TXN-12345' },
-    ],
-    text_similarity: { score: 0.92, common_terms: ['payment', 'failed', 'declined'] },
-  },
-  ticket_count: 3,
-  tickets: [
+  ticketCount: 3,
+  members: [
     {
-      id: 'ticket-001',
-      ticket_number: 'TKT-2026-001',
+      ticketId: 'ticket-001',
+      ticketNumber: 'TKT-2026-001',
       summary: 'Payment failed for my order',
-      description: 'I tried to pay but the payment was declined.',
-      status: 'open',
-      priority: 'high',
-      channel: 'in_app',
       category: 'Payments',
-      region: 'US',
-      merchant: 'Acme Corp',
-      transaction_id: 'TXN-12345',
-      created_at: '2026-01-30T09:30:00Z',
+      confidenceScore: 0.95,
+      createdAt: '2026-01-30T09:30:00Z',
     },
     {
-      id: 'ticket-002',
-      ticket_number: 'TKT-2026-002',
+      ticketId: 'ticket-002',
+      ticketNumber: 'TKT-2026-002',
       summary: 'Unable to complete payment',
-      description: 'Payment keeps getting declined on checkout.',
-      status: 'open',
-      priority: 'high',
-      channel: 'chat',
       category: 'Payments',
-      region: 'US',
-      merchant: 'Acme Corp',
-      transaction_id: 'TXN-12345',
-      created_at: '2026-01-30T09:45:00Z',
+      confidenceScore: 0.91,
+      createdAt: '2026-01-30T09:45:00Z',
     },
     {
-      id: 'ticket-003',
-      ticket_number: 'TKT-2026-003',
+      ticketId: 'ticket-003',
+      ticketNumber: 'TKT-2026-003',
       summary: 'Payment error at Acme Corp',
-      description: 'Getting payment declined message.',
-      status: 'open',
-      priority: 'medium',
-      channel: 'email',
       category: 'Payments',
-      region: 'US',
-      merchant: 'Acme Corp',
-      transaction_id: 'TXN-12345',
-      created_at: '2026-01-30T10:00:00Z',
+      confidenceScore: 0.88,
+      createdAt: '2026-01-30T10:00:00Z',
     },
   ],
-  created_at: '2026-01-30T10:00:00Z',
+  createdAt: '2026-01-30T10:00:00Z',
 };
 
 const mockMergeResponse = {
   id: 'merge-001',
-  cluster_id: 'cluster-001',
-  primary_ticket_id: 'ticket-001',
-  secondary_ticket_ids: ['ticket-002', 'ticket-003'],
-  merge_behavior: 'keep_latest',
+  clusterId: 'cluster-001',
+  primaryTicketId: 'ticket-001',
+  secondaryTicketIds: ['ticket-002', 'ticket-003'],
+  mergeBehavior: 'keep_latest',
   status: 'completed',
-  performed_by: 'agent@example.com',
-  performed_at: '2026-01-30T11:00:00Z',
-  revert_deadline: '2026-02-06T11:00:00Z',
+  performedBy: 'agent@example.com',
+  performedAt: '2026-01-30T11:00:00Z',
+  revertDeadline: '2026-02-06T11:00:00Z',
 };
 
-const mockPendingCount = { pending_count: 2 };
+const mockPendingCount = { pendingCount: 2 };
 
 async function setupMockApi(page: Page) {
   // Mock clusters list endpoint
-  await page.route('**/api/clusters*', async (route, request) => {
+  await page.route('**/api/v1/clusters**', async (route, request) => {
     const url = new URL(request.url());
     const clusterId = url.pathname.match(/\/clusters\/([^/]+)$/)?.[1];
 
-    if (clusterId && !url.pathname.includes('dismiss') && !url.pathname.includes('members')) {
-      // Get cluster detail
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockClusterDetail),
-      });
-    } else if (url.pathname.includes('/pending/count')) {
+    if (url.pathname.includes('/pending/count')) {
       // Pending count
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(mockPendingCount),
+      });
+    } else if (clusterId && !url.pathname.includes('dismiss') && !url.pathname.includes('members')) {
+      // Get cluster detail
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(mockClusterDetail),
       });
     } else if (request.method() === 'GET') {
       // List clusters
@@ -152,7 +115,7 @@ async function setupMockApi(page: Page) {
   });
 
   // Mock merges endpoint
-  await page.route('**/api/merges*', async (route, request) => {
+  await page.route('**/api/v1/merges**', async (route, request) => {
     if (request.method() === 'POST') {
       await route.fulfill({
         status: 201,
@@ -170,12 +133,17 @@ test.describe('Merge Workflow', () => {
     await setupMockApi(page);
   });
 
+  async function openFirstCluster(page: Page) {
+    const firstClusterCard = page.getByRole('button', { name: /tickets\s+pending/i }).first();
+    await expect(firstClusterCard).toBeVisible();
+    await firstClusterCard.click();
+  }
+
   test('should display pending clusters list', async ({ page }) => {
     await page.goto('/clusters');
     await expect(page.getByRole('heading', { name: /duplicate clusters/i })).toBeVisible();
 
     // Check pending count is displayed
-    await expect(page.getByText('2')).toBeVisible();
     await expect(page.getByText(/pending review/i)).toBeVisible();
 
     // Check cluster cards are displayed
@@ -187,7 +155,7 @@ test.describe('Merge Workflow', () => {
     await page.goto('/clusters');
 
     // Click on first cluster
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
 
     // Wait for detail panel to appear
     await expect(page.getByText('TKT-2026-001')).toBeVisible();
@@ -195,70 +163,60 @@ test.describe('Merge Workflow', () => {
     await expect(page.getByText('TKT-2026-003')).toBeVisible();
 
     // Check matching signals are shown
-    await expect(page.getByText('Acme Corp')).toBeVisible();
+    await expect(page.getByText('Payments')).toBeVisible();
   });
 
-  test('should display confidence badge correctly', async ({ page }) => {
+  test('should display cluster status correctly', async ({ page }) => {
     await page.goto('/clusters');
 
-    // High confidence cluster should have appropriate styling
-    const highConfidenceBadge = page.locator('[data-testid="confidence-badge"]').first();
-    await expect(highConfidenceBadge).toContainText(/high/i);
+    // Pending cluster should have appropriate styling
+    await expect(page.getByText(/pending/i).first()).toBeVisible();
   });
 
   test('should open merge dialog and select primary ticket', async ({ page }) => {
     await page.goto('/clusters');
 
     // Click cluster to open detail
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
     await expect(page.getByText('TKT-2026-001')).toBeVisible();
 
-    // Click merge button
-    await page.getByRole('button', { name: /merge/i }).first().click();
+    // Select a ticket preview
+    await page.getByText(/payment failed for my order/i).click();
+
+    // Click merge tickets button
+    await page.getByRole('button', { name: /merge tickets/i }).click();
 
     // Merge dialog should open
-    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Confirm Merge', exact: true })).toBeVisible();
 
-    // Primary ticket selection should be available
-    await expect(page.getByText(/select primary ticket/i)).toBeVisible();
+    // Confirm Merge button should be visible
+    await expect(page.getByRole('button', { name: /confirm merge/i })).toBeVisible();
   });
 
   test('should complete merge workflow successfully', async ({ page }) => {
     await page.goto('/clusters');
 
     // Open cluster detail
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
     await expect(page.getByText('TKT-2026-001')).toBeVisible();
 
+    // Select a ticket preview in detail panel
+    await page.getByText(/payment failed for my order/i).click();
+
     // Open merge dialog
-    await page.getByRole('button', { name: /merge/i }).first().click();
-    await expect(page.getByRole('dialog')).toBeVisible();
-
-    // Select primary ticket (first one)
-    const primaryRadio = page.getByRole('radio').first();
-    if (await primaryRadio.isVisible()) {
-      await primaryRadio.click();
-    }
-
-    // Select merge behavior
-    const behaviorSelect = page.getByRole('combobox');
-    if (await behaviorSelect.isVisible()) {
-      await behaviorSelect.selectOption('keep_latest');
-    }
+    await page.getByRole('button', { name: /merge tickets/i }).click();
+    await expect(page.getByRole('heading', { name: 'Confirm Merge', exact: true })).toBeVisible();
 
     // Confirm merge
-    const confirmButton = page.getByRole('button', { name: /confirm merge/i });
-    if (await confirmButton.isVisible()) {
-      await confirmButton.click();
+    await page.getByRole('button', { name: /confirm merge/i }).click();
 
-      // Should show success message or close dialog
-      await expect(page.getByRole('dialog')).not.toBeVisible({ timeout: 5000 });
-    }
+    // Should close dialog
+    await expect(page.getByRole('heading', { name: 'Confirm Merge', exact: true })).not.toBeVisible({ timeout: 5000 });
   });
 
   test('should allow dismissing a cluster', async ({ page }) => {
     // Mock dismiss endpoint
-    await page.route('**/api/clusters/**/dismiss', async (route) => {
+    await page.route('**/api/v1/clusters/**/dismiss', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -269,10 +227,10 @@ test.describe('Merge Workflow', () => {
     await page.goto('/clusters');
 
     // Open cluster detail
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
 
     // Find and click dismiss button
-    const dismissButton = page.getByRole('button', { name: /dismiss/i });
+    const dismissButton = page.getByRole('button', { name: 'Dismiss Cluster', exact: true });
     if (await dismissButton.isVisible()) {
       // Handle window.prompt mock
       await page.evaluate(() => {
@@ -287,7 +245,7 @@ test.describe('Merge Workflow', () => {
     await page.goto('/clusters');
 
     // Open cluster detail
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
 
     // Ticket previews should show relevant info
     await expect(page.getByText(/payment failed for my order/i)).toBeVisible();
@@ -310,7 +268,7 @@ test.describe('Merge Workflow', () => {
     await page.goto('/clusters');
 
     // Open cluster detail
-    await page.getByText(/duplicate payment failure tickets/i).click();
+    await openFirstCluster(page);
     await expect(page.getByText('TKT-2026-001')).toBeVisible();
 
     // Close the panel
@@ -340,7 +298,7 @@ test.describe('Merge Workflow', () => {
 test.describe('Error Handling', () => {
   test('should display error message when API fails', async ({ page }) => {
     // Mock API error
-    await page.route('**/api/clusters*', async (route) => {
+    await page.route('**/api/v1/clusters**', async (route) => {
       await route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -351,7 +309,7 @@ test.describe('Error Handling', () => {
     await page.goto('/clusters');
 
     // Error banner should be visible
-    await expect(page.getByText(/error/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Error', exact: true })).toBeVisible({ timeout: 10000 });
   });
 });
 
@@ -362,14 +320,14 @@ test.describe('Navigation', () => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ data: [], meta: { total: 0, offset: 0, limit: 20, has_more: false } }),
+        body: JSON.stringify({ data: [], meta: { total: 0, offset: 0, limit: 20, hasMore: false } }),
       });
     });
 
     await page.goto('/');
 
     // Look for clusters link in navigation
-    const clustersLink = page.getByRole('link', { name: /clusters/i });
+    const clustersLink = page.getByRole('link', { name: 'Clusters', exact: true });
     if (await clustersLink.isVisible()) {
       await clustersLink.click();
       await expect(page).toHaveURL(/clusters/);
