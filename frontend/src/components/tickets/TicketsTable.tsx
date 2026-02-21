@@ -5,6 +5,7 @@
  */
 
 import type { Ticket, TicketFilters } from '../../types';
+import { statusStyles, priorityStyles } from '../../theme/colors';
 
 export interface TicketsTableProps {
   tickets: Ticket[];
@@ -37,7 +38,7 @@ function SortIcon({ active, order }: { active: boolean; order: 'asc' | 'desc' })
   }
   return order === 'asc' ? (
     <svg
-      className="ml-1 inline h-4 w-4 text-blue-600"
+      className="ml-1 inline h-4 w-4 text-primary-600"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -46,7 +47,7 @@ function SortIcon({ active, order }: { active: boolean; order: 'asc' | 'desc' })
     </svg>
   ) : (
     <svg
-      className="ml-1 inline h-4 w-4 text-blue-600"
+      className="ml-1 inline h-4 w-4 text-primary-600"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -69,21 +70,6 @@ export function TicketsTable({
   onRowClick,
   isLoading = false,
 }: TicketsTableProps) {
-  const statusColors: Record<string, string> = {
-    open: 'bg-blue-100 text-blue-800',
-    in_progress: 'bg-yellow-100 text-yellow-800',
-    resolved: 'bg-green-100 text-green-800',
-    closed: 'bg-gray-100 text-gray-800',
-    merged: 'bg-purple-100 text-purple-800',
-  };
-
-  const priorityColors: Record<string, string> = {
-    low: 'bg-gray-100 text-gray-800',
-    medium: 'bg-blue-100 text-blue-800',
-    high: 'bg-orange-100 text-orange-800',
-    urgent: 'bg-red-100 text-red-800',
-  };
-
   const columns: {
     key: SortableField | 'summary' | 'clusterId';
     label: string;
@@ -105,7 +91,7 @@ export function TicketsTable({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+        <div className="spinner" />
         <span className="ml-3 text-gray-600">Loading tickets...</span>
       </div>
     );
@@ -156,7 +142,7 @@ export function TicketsTable({
               </td>
               <td className="whitespace-nowrap px-4 py-3">
                 <span
-                  className={`rounded-full px-2 py-1 text-xs font-medium ${statusColors[ticket.status] || 'bg-gray-100'}`}
+                  className={`badge ${statusStyles[ticket.status] || 'badge-neutral'}`}
                 >
                   {ticket.status.replace('_', ' ')}
                 </span>
@@ -164,7 +150,7 @@ export function TicketsTable({
               <td className="whitespace-nowrap px-4 py-3">
                 {ticket.priority && (
                   <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium ${priorityColors[ticket.priority] || 'bg-gray-100'}`}
+                    className={`badge ${priorityStyles[ticket.priority] || 'badge-neutral'}`}
                   >
                     {ticket.priority}
                   </span>
@@ -175,7 +161,7 @@ export function TicketsTable({
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-sm">
                 {ticket.clusterId ? (
-                  <span className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
+                  <span className="rounded bg-primary-100 px-2 py-1 text-xs text-primary-700">
                     Assigned
                   </span>
                 ) : (

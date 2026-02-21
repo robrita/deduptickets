@@ -5,6 +5,7 @@
  */
 
 import type { Cluster } from '../../types';
+import { statusStyles } from '../../theme/colors';
 
 export interface ClusterCardProps {
   cluster: Cluster;
@@ -12,13 +13,6 @@ export interface ClusterCardProps {
   onClick?: (clusterId: string) => void;
   onDismiss?: (clusterId: string) => void;
 }
-
-const statusStyles: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  merged: 'bg-green-100 text-green-800',
-  dismissed: 'bg-gray-100 text-gray-800',
-  expired: 'bg-gray-100 text-gray-500',
-};
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -44,8 +38,8 @@ export function ClusterCard({ cluster, isSelected = false, onClick, onDismiss }:
 
   return (
     <div
-      className={`rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md ${
-        isSelected ? 'border-blue-400 ring-2 ring-blue-100' : 'border-gray-200'
+      className={`card-hover transition-all ${
+        isSelected ? 'border-primary-400 ring-2 ring-primary-100' : 'border-gray-200'
       } ${
         onClick ? 'cursor-pointer' : ''
       }`}

@@ -5,6 +5,7 @@
  */
 
 import type { Ticket } from '../../types';
+import { severityStyles } from '../../theme/colors';
 
 export interface TicketPreviewProps {
   ticket: Ticket;
@@ -12,13 +13,6 @@ export interface TicketPreviewProps {
   isSelected?: boolean;
   onSelect?: (ticketId: string) => void;
 }
-
-const severityColors = {
-  s4: 'bg-gray-100 text-gray-700',
-  s3: 'bg-blue-100 text-blue-700',
-  s2: 'bg-orange-100 text-orange-700',
-  s1: 'bg-red-100 text-red-700',
-};
 
 const severityLabels: Record<string, string> = {
   s1: 'S1 - Critical',
@@ -52,7 +46,7 @@ export function TicketPreview({
     <div
       className={`rounded-lg border p-3 transition-colors ${
         isSelected
-          ? 'border-blue-500 bg-blue-50'
+          ? 'border-primary-500 bg-primary-50'
           : isCanonical
             ? 'border-green-500 bg-green-50'
             : 'border-gray-200 bg-white hover:border-gray-300'
@@ -79,7 +73,7 @@ export function TicketPreview({
             {ticket.severity && (
               <>
                 <span
-                  className={`rounded px-1.5 py-0.5 ${severityColors[ticket.severity] || 'bg-gray-100 text-gray-700'}`}
+                  className={`rounded px-1.5 py-0.5 ${severityStyles[ticket.severity] || 'bg-gray-100 text-gray-700'}`}
                 >
                   {severityLabels[ticket.severity] || ticket.severity}
                 </span>

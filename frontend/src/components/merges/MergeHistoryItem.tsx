@@ -6,6 +6,7 @@
 
 import React from 'react';
 import type { MergeOperation } from '../../types';
+import { statusStyles, mergeStatusLabels } from '../../theme/colors';
 
 interface MergeHistoryItemProps {
   merge: MergeOperation;
@@ -57,18 +58,8 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
     return `${diffHours}h ${diffMins}m remaining`;
   };
 
-  const statusStyles: Record<string, string> = {
-    completed: 'bg-green-100 text-green-800',
-    reverted: 'bg-gray-100 text-gray-800',
-  };
-
-  const statusLabels: Record<string, string> = {
-    completed: 'Merged',
-    reverted: 'Reverted',
-  };
-
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+    <div className="card-hover !p-4 !border-gray-200">
       <div className="flex items-start justify-between">
         {/* Left side: merge info */}
         <div className="flex-1 min-w-0">
@@ -78,7 +69,7 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
                 statusStyles[merge.status] || statusStyles.pending
               }`}
             >
-              {statusLabels[merge.status] || merge.status}
+              {mergeStatusLabels[merge.status] || merge.status}
             </span>
             <span className="text-sm text-gray-500">{formatRelativeTime(merge.performedAt)}</span>
           </div>
@@ -138,7 +129,7 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
           {onViewDetails && (
             <button
               onClick={() => onViewDetails(merge)}
-              className="text-sm text-indigo-600 hover:text-indigo-800"
+              className="btn-tertiary !min-h-0 !px-2 !py-1"
             >
               View
             </button>
@@ -146,7 +137,7 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
           {onRevert && isRevertable() && (
             <button
               onClick={() => onRevert(merge)}
-              className="inline-flex items-center px-3 py-1.5 border border-amber-300 text-xs font-medium rounded-md text-amber-700 bg-amber-50 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+              className="btn-warning !min-h-0 !px-3 !py-1.5 !text-xs"
             >
               <svg
                 className="w-3.5 h-3.5 mr-1"

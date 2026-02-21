@@ -8,6 +8,7 @@ import { listClusters } from '../services/clusterService';
 import { listMerges } from '../services/mergeService';
 import { listTickets } from '../services/ticketService';
 import type { Cluster, MergeOperation, Ticket } from '../types';
+import { statusStyles, priorityStyles } from '../theme/colors';
 
 interface DashboardStats {
   pendingClusters: number;
@@ -65,64 +66,52 @@ export function Dashboard({ month }: DashboardProps) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="page-container">
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          <span className="ml-3 text-gray-600">Loading dashboard...</span>
+          <div className="spinner"></div>
+          <span className="ml-3 helper-text">Loading dashboard...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+    <div className="page-container">
+      <h1 className="page-title mb-6">Dashboard</h1>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Link
-          to="/clusters"
-          className="bg-blue-50 border border-blue-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-        >
-          <p className="text-sm text-blue-600 mb-1">Pending Clusters</p>
-          <p className="text-4xl font-bold text-blue-700">{stats.pendingClusters}</p>
-          <p className="text-xs text-blue-500 mt-2">Click to review →</p>
+        <Link to="/clusters" className="stat-card-blue">
+          <p className="text-sm text-stat-blue-dark mb-1">Pending Clusters</p>
+          <p className="financial-amount text-stat-blue-dark">{stats.pendingClusters}</p>
+          <p className="text-xs text-stat-blue mt-2">Click to review →</p>
         </Link>
 
-        <Link
-          to="/tickets"
-          className="bg-green-50 border border-green-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-        >
-          <p className="text-sm text-green-600 mb-1">Open Tickets</p>
-          <p className="text-4xl font-bold text-green-700">{stats.openTickets}</p>
-          <p className="text-xs text-green-500 mt-2">View open tickets →</p>
+        <Link to="/tickets" className="stat-card-teal">
+          <p className="text-sm text-stat-teal-dark mb-1">Open Tickets</p>
+          <p className="financial-amount text-stat-teal-dark">{stats.openTickets}</p>
+          <p className="text-xs text-stat-teal mt-2">View open tickets →</p>
         </Link>
 
-        <Link
-          to="/tickets"
-          className="bg-emerald-50 border border-emerald-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-        >
-          <p className="text-sm text-emerald-600 mb-1">Total Tickets</p>
-          <p className="text-4xl font-bold text-emerald-700">{stats.totalTickets}</p>
-          <p className="text-xs text-emerald-500 mt-2">Browse ticket list →</p>
+        <Link to="/tickets" className="stat-card-emerald">
+          <p className="text-sm text-stat-emerald-dark mb-1">Total Tickets</p>
+          <p className="financial-amount text-stat-emerald-dark">{stats.totalTickets}</p>
+          <p className="text-xs text-stat-emerald mt-2">Browse ticket list →</p>
         </Link>
 
-        <Link
-          to="/merges"
-          className="bg-purple-50 border border-purple-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-        >
-          <p className="text-sm text-purple-600 mb-1">Merge Operations</p>
-          <p className="text-4xl font-bold text-purple-700">{stats.totalMerges}</p>
-          <p className="text-xs text-purple-500 mt-2">View merge history →</p>
+        <Link to="/merges" className="stat-card-violet">
+          <p className="text-sm text-stat-violet-dark mb-1">Merge Operations</p>
+          <p className="financial-amount text-stat-violet-dark">{stats.totalMerges}</p>
+          <p className="text-xs text-stat-violet mt-2">View merge history →</p>
         </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Clusters */}
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div className="card !p-0 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 className="font-semibold text-gray-900">Recent Pending Clusters</h2>
-            <Link to="/clusters" className="text-sm text-blue-600 hover:text-blue-800">
+            <Link to="/clusters" className="text-sm text-primary-600 hover:text-primary-700">
               View all →
             </Link>
           </div>
@@ -142,7 +131,7 @@ export function Dashboard({ month }: DashboardProps) {
                       <p className="text-sm text-gray-500 line-clamp-1">{cluster.summary}</p>
                     </div>
                     <div className="text-right">
-                      <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                      <span className={`badge ${statusStyles[cluster.status] || 'badge-neutral'}`}>
                         {cluster.status}
                       </span>
                     </div>
@@ -154,10 +143,10 @@ export function Dashboard({ month }: DashboardProps) {
         </div>
 
         {/* Recent Merge Operations */}
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div className="card !p-0 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 className="font-semibold text-gray-900">Recent Merge Operations</h2>
-            <Link to="/merges" className="text-sm text-blue-600 hover:text-blue-800">
+            <Link to="/merges" className="text-sm text-primary-600 hover:text-primary-700">
               View all →
             </Link>
           </div>
@@ -179,13 +168,7 @@ export function Dashboard({ month }: DashboardProps) {
                       <p className="text-sm text-gray-500 line-clamp-1">Cluster {merge.clusterId}</p>
                     </div>
                     <div className="text-right">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          merge.status === 'completed'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
+                      <span className={`badge ${statusStyles[merge.status] || 'badge-neutral'}`}>
                         {merge.status}
                       </span>
                       <p className="text-sm text-gray-600 mt-1">
@@ -201,10 +184,10 @@ export function Dashboard({ month }: DashboardProps) {
       </div>
 
       {/* Recent Tickets */}
-      <div className="mt-6 bg-white rounded-lg shadow-sm">
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="mt-6 card !p-0 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
           <h2 className="font-semibold text-gray-900">Recent Tickets</h2>
-          <Link to="/tickets" className="text-sm text-blue-600 hover:text-blue-800">
+          <Link to="/tickets" className="text-sm text-primary-600 hover:text-primary-700">
             View all →
           </Link>
         </div>
@@ -215,23 +198,23 @@ export function Dashboard({ month }: DashboardProps) {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                  <th className="table-header">
                     Ticket #
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                  <th className="table-header">
                     Summary
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                  <th className="table-header">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                  <th className="table-header">
                     Priority
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 bg-white">
                 {recentTickets.map(ticket => (
-                  <tr key={ticket.id} className="hover:bg-gray-50">
+                  <tr key={ticket.id} className="table-row-hover">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {ticket.ticketNumber}
                     </td>
@@ -240,15 +223,7 @@ export function Dashboard({ month }: DashboardProps) {
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${
-                          ticket.status === 'open'
-                            ? 'bg-blue-100 text-blue-800'
-                            : ticket.status === 'in_progress'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : ticket.status === 'resolved'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-800'
-                        }`}
+                        className={`badge ${statusStyles[ticket.status] || 'badge-neutral'}`}
                       >
                         {ticket.status.replace('_', ' ')}
                       </span>
@@ -256,15 +231,7 @@ export function Dashboard({ month }: DashboardProps) {
                     <td className="px-4 py-3">
                       {ticket.priority && (
                         <span
-                          className={`rounded-full px-2 py-1 text-xs font-medium ${
-                            ticket.priority === 'urgent'
-                              ? 'bg-red-100 text-red-800'
-                              : ticket.priority === 'high'
-                                ? 'bg-orange-100 text-orange-800'
-                                : ticket.priority === 'medium'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-gray-100 text-gray-800'
-                          }`}
+                          className={`badge ${priorityStyles[ticket.priority] || 'badge-neutral'}`}
                         >
                           {ticket.priority}
                         </span>

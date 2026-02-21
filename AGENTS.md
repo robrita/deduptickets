@@ -13,6 +13,9 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for system design, layers, and 
 6. **Reuse before writing** — check for existing helpers and patterns first. → [docs/PATTERNS.md](docs/PATTERNS.md)
 7. **Run the checklist** — verify every applicable item before marking work done. → [docs/CHECKLIST.md](docs/CHECKLIST.md)
 8. **Text-only human input** — never use checkbox/radio UI; ask questions as plain text with numbered options. → [docs/AGENT_INTERACTION.md](docs/AGENT_INTERACTION.md)
+9. **Date-stamped feature branches** — name branches `feature/<topic>-<YYYY-MM-DD>`, always merge to main before branching. → [docs/BRANCHING.md](docs/BRANCHING.md)
+10. **Frontend theme compliance** — use `primary-*` tokens of the GCash theme and component classes; never hardcode `blue-*`/`indigo-*`. → [docs/FRONTEND_THEME.md](docs/FRONTEND_THEME.md)
+11. **Frontend quality gates** — every frontend change must pass lint, format, typecheck, build, and tests before completion. → [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)
 
 ## Navigation
 
@@ -21,7 +24,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for system design, layers, and 
 | System architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Understanding the codebase, adding domains |
 | Serverless constraints | [docs/SERVERLESS.md](docs/SERVERLESS.md) | Any file I/O or deployment work |
 | Async patterns | [docs/ASYNC_PATTERNS.md](docs/ASYNC_PATTERNS.md) | HTTP calls, parallel operations |
-| Quality gates | [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md) | After any code change (Ruff, Bandit, mypy, tests) |
+| Quality gates | [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md) | After any code change (backend or frontend) |
+| Frontend theme & styling | [docs/FRONTEND_THEME.md](docs/FRONTEND_THEME.md) | Adding or modifying frontend components |
 | API response format | [docs/API_STANDARDS.md](docs/API_STANDARDS.md) | Adding or modifying endpoints |
 | Dependency management | [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) | Adding or updating packages |
 | Code patterns & helpers | [docs/PATTERNS.md](docs/PATTERNS.md) | Implementing features, removing features |
@@ -34,6 +38,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for system design, layers, and 
 | Cosmos DB best practices | [.github/skills/cosmosdb-best-practices/SKILL.md](.github/skills/cosmosdb-best-practices/SKILL.md) | Any Cosmos DB work |
 | Cosmos DB field naming | [docs/COSMOS_FIELD_NAMING.md](docs/COSMOS_FIELD_NAMING.md) | Indexing policies, excluded paths, queries |
 | Env sync (.env ↔ local.settings.json) | [docs/RUNTIME.md](docs/RUNTIME.md) | Updating connection values for either entry point |
+| Branching strategy | [docs/BRANCHING.md](docs/BRANCHING.md) | Creating feature branches, merging to main |
 
 ## Reading Order for New Tasks
 

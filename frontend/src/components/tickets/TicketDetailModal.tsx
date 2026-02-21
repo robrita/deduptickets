@@ -5,6 +5,7 @@
  */
 
 import type { Ticket } from '../../types';
+import { statusStyles, priorityStyles } from '../../theme/colors';
 
 export interface TicketDetailModalProps {
   ticket: Ticket;
@@ -23,24 +24,9 @@ function formatCurrency(amount?: number, currency?: string): string {
 }
 
 export function TicketDetailModal({ ticket, onClose, isLoading = false }: TicketDetailModalProps) {
-  const statusColors: Record<string, string> = {
-    open: 'bg-blue-100 text-blue-800',
-    in_progress: 'bg-yellow-100 text-yellow-800',
-    resolved: 'bg-green-100 text-green-800',
-    closed: 'bg-gray-100 text-gray-800',
-    merged: 'bg-purple-100 text-purple-800',
-  };
-
-  const priorityColors: Record<string, string> = {
-    low: 'bg-gray-100 text-gray-800',
-    medium: 'bg-blue-100 text-blue-800',
-    high: 'bg-orange-100 text-orange-800',
-    urgent: 'bg-red-100 text-red-800',
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="mx-4 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white shadow-xl">
+    <div className="modal-backdrop flex items-center justify-center">
+      <div className="mx-4 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <div>
@@ -49,13 +35,13 @@ export function TicketDetailModal({ ticket, onClose, isLoading = false }: Ticket
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[ticket.status] || 'bg-gray-100'}`}
+              className={`badge ${statusStyles[ticket.status] || 'badge-neutral'}`}
             >
               {ticket.status.replace('_', ' ')}
             </span>
             {ticket.priority && (
               <span
-                className={`rounded-full px-3 py-1 text-xs font-medium ${priorityColors[ticket.priority] || 'bg-gray-100'}`}
+                className={`badge ${priorityStyles[ticket.priority] || 'badge-neutral'}`}
               >
                 {ticket.priority}
               </span>
@@ -66,7 +52,7 @@ export function TicketDetailModal({ ticket, onClose, isLoading = false }: Ticket
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+            <div className="spinner" />
           </div>
         ) : (
           <div className="px-6 py-4">
@@ -164,7 +150,7 @@ export function TicketDetailModal({ ticket, onClose, isLoading = false }: Ticket
         <div className="flex items-center justify-end border-t border-gray-200 bg-gray-50 px-6 py-4">
           <button
             onClick={onClose}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="btn-secondary"
           >
             Close
           </button>

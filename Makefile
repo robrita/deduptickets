@@ -156,6 +156,33 @@ ifndef APP_NAME
 endif
 	func azure functionapp publish $(APP_NAME) --python --build remote
 
+##@ Frontend
+
+frontend-lint: ## Lint frontend with ESLint
+	cd frontend && npm run lint
+
+frontend-lint-fix: ## Fix ESLint issues automatically
+	cd frontend && npm run lint:fix
+
+frontend-format: ## Format frontend with Prettier
+	cd frontend && npm run format
+
+frontend-format-check: ## Check frontend formatting
+	cd frontend && npm run format:check
+
+frontend-build: ## Build frontend (tsc + vite)
+	cd frontend && npm run build
+
+frontend-test: ## Run frontend unit tests (Vitest)
+	cd frontend && npm run test
+
+frontend-test-e2e: ## Run frontend E2E tests (Playwright)
+	cd frontend && npm run test:e2e
+
+frontend-check: frontend-lint frontend-format-check frontend-build frontend-test ## Run all frontend checks
+
+frontend-ci: frontend-lint frontend-format-check frontend-build frontend-test ## Run full frontend CI pipeline
+
 ##@ Documentation
 
 lint-docs: ## Validate AGENTS.md structure and doc links
@@ -172,4 +199,4 @@ clean-all: clean ## Remove all artifacts including virtual environment
 
 check: lint format-check test ## Run lint, format check, and tests
 
-ci: lint format-check security typecheck test-cov lint-docs ## Run full CI pipeline
+ci: lint format-check security typecheck test-cov lint-docs frontend-ci ## Run full CI pipeline

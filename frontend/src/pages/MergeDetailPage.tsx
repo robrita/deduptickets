@@ -49,25 +49,21 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
   }, [mergeId, month]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Merge Details</h1>
-              <p className="mt-1 text-sm text-gray-500">Review merge operation metadata and ticket relationships.</p>
-            </div>
-            <button
-              onClick={() => navigate('/merges')}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Back to Merges
-            </button>
-          </div>
+    <div className="page-container !max-w-4xl">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Merge Details</h1>
+          <p className="page-subtitle">Review merge operation metadata and ticket relationships.</p>
         </div>
-      </header>
+        <button
+          onClick={() => navigate('/merges')}
+          className="btn-secondary"
+        >
+          Back to Merges
+        </button>
+      </div>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div>
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-sm text-gray-500">Loading merge details...</p>
@@ -81,10 +77,10 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">Operation {merge.id}</h2>
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                className={`badge ${
                   merge.status === 'completed'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-800'
+                    ? 'badge-success'
+                    : 'badge-neutral'
                 }`}
               >
                 {merge.status}
@@ -160,7 +156,7 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
             )}
           </div>
         ) : null}
-      </main>
+      </div>
     </div>
   );
 };

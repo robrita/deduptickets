@@ -50,7 +50,7 @@ export function ClusterList({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+        <div className="spinner" />
         <span className="ml-3 text-gray-600">Loading clusters...</span>
       </div>
     );

@@ -111,7 +111,7 @@ export function ClusterDetail({
               <div
                 className={`rounded-lg border p-3 transition-colors ${
                   member.ticketId === selectedTicketId
-                    ? 'border-blue-500 bg-blue-50'
+                    ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 } ${isPending ? 'cursor-pointer' : ''}`}
                 onClick={isPending ? () => handleTicketSelect(member.ticketId) : undefined}
@@ -141,7 +141,7 @@ export function ClusterDetail({
                       {member.confidenceScore != null && (
                         <>
                           <span>•</span>
-                          <span className="rounded bg-blue-100 px-1.5 py-0.5 text-blue-700">
+                          <span className="rounded bg-primary-100 px-1.5 py-0.5 text-primary-700">
                             {Math.round(member.confidenceScore * 100)}% match
                           </span>
                         </>
@@ -186,7 +186,7 @@ export function ClusterDetail({
             <button
               onClick={() => setShowMergeDialog(true)}
               disabled={!selectedTicketId || isProcessing}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-primary"
             >
               Merge Tickets
             </button>

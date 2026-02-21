@@ -40,6 +40,17 @@ Before marking any task as complete, verify every applicable item:
 - [ ] Endpoint path, method, parameters, headers, body format, and response structure documented
 - [ ] curl examples added in Testing section for new endpoints
 
+## Frontend
+
+- [ ] No hardcoded `blue-*` or `indigo-*` classes for brand colors — use `primary-*` tokens
+- [ ] Component classes used where available (`.btn-primary`, `.card`, `.badge-*`, etc.)
+- [ ] Status/priority/severity maps imported from `theme/colors.ts` (not duplicated inline)
+- [ ] ESLint passes (`make frontend-lint`)
+- [ ] Prettier passes (`make frontend-format-check`)
+- [ ] TypeScript compiles and Vite build succeeds (`make frontend-build`)
+- [ ] Unit tests pass (`make frontend-test`)
+- [ ] No new Tailwind classes that duplicate existing component classes in `index.css`
+
 ## Agent Interaction
 
 - [ ] New rules added to AGENTS.md follow the map pattern (one-liner + pointer to `docs/` topic file)

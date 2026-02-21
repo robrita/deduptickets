@@ -105,7 +105,7 @@ export function MergeDialog({
                   key={option.value}
                   className={`flex cursor-pointer items-start rounded-lg border p-3 transition-colors ${
                     behavior === option.value
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-primary-500 bg-primary-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -132,17 +132,17 @@ export function MergeDialog({
           <button
             onClick={onCancel}
             disabled={isLoading}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-secondary"
           >
             Cancel
           </button>
           <button
             onClick={() => onConfirm(behavior)}
             disabled={isLoading}
-            className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-primary flex items-center gap-2"
           >
             {isLoading && (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <div className="spinner-sm" />
             )}
             Confirm Merge
           </button>

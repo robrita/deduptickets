@@ -106,22 +106,20 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page-container">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Merge History</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                View and manage merge operations. Revert merges within 24 hours.
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={loadMerges}
-                disabled={isLoading}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Merge History</h1>
+          <p className="page-subtitle">
+            View and manage merge operations. Revert merges within 24 hours.
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={loadMerges}
+            disabled={isLoading}
+            className="btn-secondary inline-flex items-center"
               >
                 <svg
                   className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`}
@@ -136,15 +134,12 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                Refresh
-              </button>
-            </div>
+              Refresh
+            </button>
           </div>
         </div>
-      </header>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}
         <div className="mb-6">
           <div className="flex items-center gap-2">
@@ -156,7 +151,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
                   onClick={() => setFilterStatus(option.value)}
                   className={`px-4 py-2 text-sm font-medium border ${
                     filterStatus === option.value
-                      ? 'bg-indigo-600 text-white border-indigo-600'
+                      ? 'bg-primary-600 text-white border-primary-600'
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   } ${
                     option.value === 'all'
@@ -175,7 +170,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
 
         {/* Error message */}
         {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-4">
+          <div className="mb-6 alert-danger">
             <div className="flex">
               <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -184,7 +179,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <p className="ml-3 text-sm text-red-700">{error}</p>
+              <p className="ml-3 text-sm">{error}</p>
             </div>
           </div>
         )}
@@ -193,7 +188,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
         {isLoading ? (
           <div className="text-center py-12">
             <svg
-              className="animate-spin h-8 w-8 mx-auto text-indigo-600"
+              className="animate-spin h-8 w-8 mx-auto text-primary-600"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -230,7 +225,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
               />
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">No merge operations</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 helper-text">
               {filterStatus === 'revertible'
                 ? 'No revertible merges found.'
                 : 'No merge operations found for this period.'}
@@ -239,7 +234,7 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
         ) : (
           /* Merge list */
           <div className="space-y-4">
-            <p className="text-sm text-gray-500">
+            <p className="helper-text">
               Showing {merges.length} merge{merges.length !== 1 ? 's' : ''}
             </p>
             {merges.map(merge => (
@@ -252,7 +247,6 @@ export const MergesPage: React.FC<MergesPageProps> = ({ month }) => {
             ))}
           </div>
         )}
-      </main>
 
       {/* Revert confirmation dialog */}
       {selectedMerge && (

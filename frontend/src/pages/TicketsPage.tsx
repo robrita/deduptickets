@@ -66,11 +66,11 @@ export function TicketsPage({ month }: TicketsPageProps) {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="page-container">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Tickets</h1>
+        <h1 className="page-title">Tickets</h1>
         {pagination && (
-          <span className="text-sm text-gray-600">{pagination.total} total tickets</span>
+          <span className="helper-text text-gray-600">{pagination.total} total tickets</span>
         )}
       </div>
 
@@ -86,7 +86,7 @@ export function TicketsPage({ month }: TicketsPageProps) {
               id="status"
               value={filters.status || ''}
               onChange={e => handleStatusChange(e.target.value)}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All</option>
               {STATUSES.map(status => (
@@ -103,7 +103,7 @@ export function TicketsPage({ month }: TicketsPageProps) {
               type="checkbox"
               checked={filters.unassigned_only || false}
               onChange={e => setFilters({ ...filters, unassigned_only: e.target.checked })}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
             />
             <span className="text-gray-700">Unassigned only</span>
           </label>
@@ -111,7 +111,7 @@ export function TicketsPage({ month }: TicketsPageProps) {
       </div>
 
       {/* Error Display */}
-      {error && <div className="mb-6 rounded-lg bg-red-50 p-4 text-red-700">{error.message}</div>}
+      {error && <div className="mb-6 alert-danger">{error.message}</div>}
 
       {/* Table */}
       <TicketsTable
@@ -129,17 +129,17 @@ export function TicketsPage({ month }: TicketsPageProps) {
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
             disabled={page === 1}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-secondary"
           >
             Previous
           </button>
-          <span className="text-sm text-gray-600">
+          <span className="helper-text text-gray-600">
             Page {page} of {totalPages}
           </span>
           <button
             onClick={() => setPage(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-secondary"
           >
             Next
           </button>

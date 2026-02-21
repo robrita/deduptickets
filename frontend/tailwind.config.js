@@ -7,35 +7,53 @@ export default {
   theme: {
     extend: {
       colors: {
-        // DedupTickets brand colors
+        // GCash brand — primary blue (#007DFE)
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50:  '#EBF5FF',
+          100: '#D6EBFF',
+          200: '#ADD6FF',
+          300: '#85C2FF',
+          400: '#5CADFF',
+          500: '#007DFE',
+          600: '#0064CB',
+          700: '#004B98',
+          800: '#003265',
+          900: '#001932',
+        },
+        // Dashboard stat card palette (blue-shifted complementary)
+        stat: {
+          blue:    { light: '#EBF5FF', DEFAULT: '#007DFE', dark: '#0064CB' },
+          teal:    { light: '#E6FAFB', DEFAULT: '#0891B2', dark: '#0E7490' },
+          violet:  { light: '#EDE9FE', DEFAULT: '#7C3AED', dark: '#6D28D9' },
+          emerald: { light: '#ECFDF5', DEFAULT: '#059669', dark: '#047857' },
+        },
+        // Page & card surfaces
+        surface: {
+          DEFAULT: '#F7F8FA',
+          alt:     '#F0F4F8',
         },
         // Confidence level colors
         confidence: {
-          high: '#10b981',    // green-500
-          medium: '#f59e0b',  // amber-500
-          low: '#ef4444',     // red-500
+          high:   '#10b981',
+          medium: '#f59e0b',
+          low:    '#ef4444',
         },
         // Severity colors
         severity: {
-          high: '#dc2626',    // red-600
-          medium: '#d97706',  // amber-600
-          low: '#059669',     // emerald-600
+          high:   '#dc2626',
+          medium: '#d97706',
+          low:    '#059669',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['Fira Code', 'monospace'],
+      },
+      boxShadow: {
+        card: '0 2px 8px rgba(0, 0, 0, 0.08)',
+      },
+      borderRadius: {
+        card: '0.75rem',
       },
     },
   },

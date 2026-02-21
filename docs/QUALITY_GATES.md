@@ -41,6 +41,26 @@ When writing custom Ruff rules or lint scripts, encode **remediation instruction
 
 This pattern turns lint errors into agent-actionable instructions without requiring documentation lookup.
 
+## Frontend Mandatory Gates
+
+After any meaningful frontend change, complete **all** gates before considering work done:
+
+1. **Lint** — `make frontend-lint` (ESLint)
+2. **Format check** — `make frontend-format-check` (Prettier)
+3. **Type check & Build** — `make frontend-build` (runs `tsc && vite build`)
+4. **Unit tests** — `make frontend-test` (Vitest)
+5. **E2E tests** — `make frontend-test-e2e` (Playwright, when applicable)
+
+Quick combined check: `make frontend-ci`
+
+### Frontend Theme Rules
+
+See [docs/FRONTEND_THEME.md](FRONTEND_THEME.md) for the full guide. Key enforcement points:
+
+- **No hardcoded `blue-*` or `indigo-*`** for brand/interactive colors — use `primary-*` tokens.
+- **Use component classes** (`.btn-primary`, `.card`, etc.) before writing custom Tailwind utilities.
+- **Import from `theme/colors.ts`** for status/priority/severity badges — never duplicate inline maps.
+
 ## Common Scenarios & Solutions
 
 ### Azure Functions Request Headers

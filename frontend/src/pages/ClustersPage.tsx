@@ -83,52 +83,45 @@ export function ClustersPage({ month }: ClustersPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="page-container">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Duplicate Clusters</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Review and merge duplicate support tickets
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="rounded-lg bg-yellow-100 px-4 py-2 text-center">
-                <p className="text-2xl font-bold text-yellow-800">{pendingCount}</p>
-                <p className="text-xs text-yellow-600">Pending Review</p>
-              </div>
-
-              <button
-                onClick={refresh}
-                disabled={isLoading}
-                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              >
-                Refresh
-              </button>
-            </div>
-          </div>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Duplicate Clusters</h1>
+          <p className="page-subtitle">
+            Review and merge duplicate support tickets
+          </p>
         </div>
-      </header>
+
+        <div className="flex items-center gap-4">
+          <div className="rounded-lg bg-yellow-100 px-4 py-2 text-center">
+            <p className="text-2xl font-bold text-yellow-800">{pendingCount}</p>
+            <p className="helper-text text-yellow-700">Pending Review</p>
+          </div>
+
+          <button
+            onClick={refresh}
+            disabled={isLoading}
+            className="btn-secondary"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
 
       {/* Error banner */}
       {error && (
-        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-          <div className="rounded-md bg-red-50 p-4">
-            <div className="flex">
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error</h3>
-                <p className="mt-1 text-sm text-red-700">{error.message}</p>
-              </div>
+        <div className="mb-6 alert-danger">
+          <div className="flex">
+            <div>
+              <h3 className="text-sm font-medium">Error</h3>
+              <p className="mt-1 text-sm">{error.message}</p>
             </div>
           </div>
         </div>
       )}
 
       {/* Main content */}
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex gap-6 transition-all duration-200">
           {/* Cluster list */}
           <div
@@ -151,7 +144,7 @@ export function ClustersPage({ month }: ClustersPageProps) {
               <div className="sticky top-6 rounded-lg border border-gray-200 bg-white shadow-lg">
                 {isLoadingDetail ? (
                   <div className="flex items-center justify-center py-12">
-                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+                    <div className="spinner" />
                   </div>
                 ) : (
                   <ClusterDetail
@@ -166,7 +159,6 @@ export function ClustersPage({ month }: ClustersPageProps) {
             </div>
           )}
         </div>
-      </main>
 
       {/* Dismiss confirmation dialog */}
       <ConfirmDialog
