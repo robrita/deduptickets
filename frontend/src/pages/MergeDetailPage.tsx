@@ -55,10 +55,7 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
           <h1 className="page-title">Merge Details</h1>
           <p className="page-subtitle">Review merge operation metadata and ticket relationships.</p>
         </div>
-        <button
-          onClick={() => navigate('/merges')}
-          className="btn-secondary"
-        >
+        <button onClick={() => navigate('/merges')} className="btn-secondary">
           Back to Merges
         </button>
       </div>
@@ -66,21 +63,23 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
       <div>
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-sm text-gray-500">Loading merge details...</p>
+            <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+              Loading merge details...
+            </p>
           </div>
         ) : error ? (
-          <div className="rounded-md bg-red-50 p-4">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/30">
+            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
           </div>
         ) : merge ? (
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+          <div className="bg-white rounded-lg border border-navy-200 shadow-sm p-6 space-y-6 dark:bg-[var(--color-surface-card)] dark:border-[var(--color-border)]">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Operation {merge.id}</h2>
+              <h2 className="text-lg font-semibold text-navy-900 dark:text-[var(--color-text)]">
+                Operation {merge.id}
+              </h2>
               <span
                 className={`badge ${
-                  merge.status === 'completed'
-                    ? 'badge-success'
-                    : 'badge-neutral'
+                  merge.status === 'completed' ? 'badge-success' : 'badge-neutral'
                 }`}
               >
                 {merge.status}
@@ -89,55 +88,89 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
 
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="font-medium text-gray-500">Cluster ID</dt>
-                <dd className="text-gray-900 break-all">{merge.clusterId}</dd>
+                <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  Cluster ID
+                </dt>
+                <dd className="text-navy-900 break-all dark:text-[var(--color-text)]">
+                  {merge.clusterId}
+                </dd>
               </div>
               <div>
-                <dt className="font-medium text-gray-500">Primary Ticket</dt>
-                <dd className="text-gray-900 break-all">{merge.primaryTicketId}</dd>
+                <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  Primary Ticket
+                </dt>
+                <dd className="text-navy-900 break-all dark:text-[var(--color-text)]">
+                  {merge.primaryTicketId}
+                </dd>
               </div>
               <div>
-                <dt className="font-medium text-gray-500">Merge Behavior</dt>
-                <dd className="text-gray-900">{merge.mergeBehavior}</dd>
+                <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  Merge Behavior
+                </dt>
+                <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                  {merge.mergeBehavior}
+                </dd>
               </div>
               <div>
-                <dt className="font-medium text-gray-500">Performed By</dt>
-                <dd className="text-gray-900">{merge.performedBy}</dd>
+                <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  Performed By
+                </dt>
+                <dd className="text-navy-900 dark:text-[var(--color-text)]">{merge.performedBy}</dd>
               </div>
               <div>
-                <dt className="font-medium text-gray-500">Performed At</dt>
-                <dd className="text-gray-900">{formatDate(merge.performedAt)}</dd>
+                <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  Performed At
+                </dt>
+                <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                  {formatDate(merge.performedAt)}
+                </dd>
               </div>
               {merge.revertDeadline && (
                 <div>
-                  <dt className="font-medium text-gray-500">Revert Deadline</dt>
-                  <dd className="text-gray-900">{formatDate(merge.revertDeadline)}</dd>
+                  <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                    Revert Deadline
+                  </dt>
+                  <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                    {formatDate(merge.revertDeadline)}
+                  </dd>
                 </div>
               )}
               {merge.revertedAt && (
                 <div>
-                  <dt className="font-medium text-gray-500">Reverted At</dt>
-                  <dd className="text-gray-900">{formatDate(merge.revertedAt)}</dd>
+                  <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                    Reverted At
+                  </dt>
+                  <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                    {formatDate(merge.revertedAt)}
+                  </dd>
                 </div>
               )}
               {merge.revertedBy && (
                 <div>
-                  <dt className="font-medium text-gray-500">Reverted By</dt>
-                  <dd className="text-gray-900">{merge.revertedBy}</dd>
+                  <dt className="font-medium text-navy-600 dark:text-[var(--color-text-secondary)]">
+                    Reverted By
+                  </dt>
+                  <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                    {merge.revertedBy}
+                  </dd>
                 </div>
               )}
             </dl>
 
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Secondary Tickets</h3>
+              <h3 className="text-sm font-medium text-navy-700 mb-2 dark:text-[var(--color-text-secondary)]">
+                Secondary Tickets
+              </h3>
               {merge.secondaryTicketIds.length === 0 ? (
-                <p className="text-sm text-gray-500">No secondary tickets.</p>
+                <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  No secondary tickets.
+                </p>
               ) : (
                 <ul className="space-y-1">
                   {merge.secondaryTicketIds.map(ticketId => (
                     <li
                       key={ticketId}
-                      className="text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded px-3 py-2 break-all"
+                      className="text-sm text-navy-900 bg-navy-50 border border-navy-200 rounded px-3 py-2 break-all dark:text-[var(--color-text)] dark:bg-[var(--color-surface-alt)] dark:border-[var(--color-border)]"
                     >
                       {ticketId}
                     </li>
@@ -148,8 +181,10 @@ export const MergeDetailPage: React.FC<MergeDetailPageProps> = ({ month }) => {
 
             {merge.revertReason && (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Revert Reason</h3>
-                <p className="text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded px-3 py-2">
+                <h3 className="text-sm font-medium text-navy-700 mb-2 dark:text-[var(--color-text-secondary)]">
+                  Revert Reason
+                </h3>
+                <p className="text-sm text-navy-900 bg-navy-50 border border-navy-200 rounded px-3 py-2 dark:text-[var(--color-text)] dark:bg-[var(--color-surface-alt)] dark:border-[var(--color-border)]">
                   {merge.revertReason}
                 </p>
               </div>

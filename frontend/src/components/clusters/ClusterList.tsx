@@ -51,7 +51,9 @@ export function ClusterList({
     return (
       <div className="flex items-center justify-center py-12">
         <div className="spinner" />
-        <span className="ml-3 text-gray-600">Loading clusters...</span>
+        <span className="ml-3 text-navy-600 dark:text-[var(--color-text-secondary)]">
+          Loading clusters...
+        </span>
       </div>
     );
   }
@@ -59,14 +61,17 @@ export function ClusterList({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 rounded-lg bg-gray-50 p-4">
+      <div className="flex flex-wrap gap-4 rounded-lg bg-navy-50 p-4 dark:bg-[var(--color-surface-alt)]">
         <div>
-          <label htmlFor="status-filter" className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="status-filter"
+            className="mb-1 block text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]"
+          >
             Status
           </label>
           <select
             id="status-filter"
-            className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+            className="rounded-md border border-navy-300 bg-white px-3 py-2 text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:text-[var(--color-text)]"
             value={filters.status || ''}
             onChange={handleStatusChange}
           >
@@ -80,15 +85,23 @@ export function ClusterList({
       </div>
 
       {/* Results count */}
-      <p className="text-sm text-gray-600">Showing {clusters.length} clusters</p>
+      <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+        Showing {clusters.length} clusters
+      </p>
 
       {/* Cluster grid */}
       {clusters.length === 0 ? (
-        <div className="rounded-lg border-2 border-dashed border-gray-300 py-12 text-center">
-          <p className="text-gray-500">No clusters found</p>
+        <div className="rounded-lg border-2 border-dashed border-navy-300 py-12 text-center dark:border-[var(--color-border)]">
+          <p className="text-navy-600 dark:text-[var(--color-text-secondary)]">No clusters found</p>
         </div>
       ) : (
-        <div className={compact ? 'grid gap-4 md:grid-cols-1 xl:grid-cols-2' : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'}>
+        <div
+          className={
+            compact
+              ? 'grid gap-4 md:grid-cols-1 xl:grid-cols-2'
+              : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'
+          }
+        >
           {clusters.map(cluster => (
             <ClusterCard
               key={cluster.id}

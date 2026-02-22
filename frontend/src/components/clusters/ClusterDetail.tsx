@@ -67,14 +67,18 @@ export function ClusterDetail({
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="border-b border-gray-200 bg-white px-6 py-4">
+      <div className="border-b border-navy-200 bg-white px-6 py-4 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)]">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-xl font-semibold text-gray-900">Cluster Details</h2>
+              <h2 className="text-xl font-semibold text-navy-900 dark:text-[var(--color-text)]">
+                Cluster Details
+              </h2>
             </div>
-            <p className="mt-1 text-sm text-gray-600">{cluster.summary}</p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+              {cluster.summary}
+            </p>
+            <p className="mt-1 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
               {cluster.ticketCount} tickets • Created {formatDate(cluster.createdAt)}
             </p>
           </div>
@@ -82,7 +86,7 @@ export function ClusterDetail({
           {onClose && (
             <button
               onClick={onClose}
-              className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+              className="rounded-md p-2 text-navy-600 hover:bg-navy-100 hover:text-navy-600 dark:text-[var(--color-text-secondary)] dark:hover:bg-navy-800"
             >
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -99,9 +103,13 @@ export function ClusterDetail({
       {/* Tickets */}
       <div className="flex-1 overflow-y-auto p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-medium text-gray-900">Member Tickets</h3>
+          <h3 className="font-medium text-navy-900 dark:text-[var(--color-text)]">
+            Member Tickets
+          </h3>
           {isPending && (
-            <p className="text-sm text-gray-500">Select a ticket as the primary for merging</p>
+            <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+              Select a ticket as the primary for merging
+            </p>
           )}
         </div>
 
@@ -111,20 +119,24 @@ export function ClusterDetail({
               <div
                 className={`rounded-lg border p-3 transition-colors ${
                   member.ticketId === selectedTicketId
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                    : 'border-navy-200 bg-white hover:border-navy-300 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:hover:border-[var(--color-border-light)]'
                 } ${isPending ? 'cursor-pointer' : ''}`}
                 onClick={isPending ? () => handleTicketSelect(member.ticketId) : undefined}
                 role={isPending ? 'button' : undefined}
                 tabIndex={isPending ? 0 : undefined}
-                onKeyDown={isPending ? e => e.key === 'Enter' && handleTicketSelect(member.ticketId) : undefined}
+                onKeyDown={
+                  isPending
+                    ? e => e.key === 'Enter' && handleTicketSelect(member.ticketId)
+                    : undefined
+                }
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <h4 className="truncate font-medium text-gray-900">
+                    <h4 className="truncate font-medium text-navy-900 dark:text-[var(--color-text)]">
                       {member.summary || 'No summary'}
                     </h4>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
                       <span>{member.ticketNumber}</span>
                       {member.category && (
                         <>
@@ -141,7 +153,7 @@ export function ClusterDetail({
                       {member.confidenceScore != null && (
                         <>
                           <span>•</span>
-                          <span className="rounded bg-primary-100 px-1.5 py-0.5 text-primary-700">
+                          <span className="rounded bg-primary-100 px-1.5 py-0.5 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
                             {Math.round(member.confidenceScore * 100)}% match
                           </span>
                         </>
@@ -152,7 +164,7 @@ export function ClusterDetail({
               </div>
               {isPending && onRemoveTicket && cluster.ticketCount > 2 && (
                 <button
-                  className="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-red-500"
+                  className="absolute right-2 top-2 rounded-md p-1 text-navy-600 hover:bg-navy-100 hover:text-red-500 dark:text-[var(--color-text-secondary)] dark:hover:bg-navy-800"
                   onClick={() => handleRemoveTicket(member.ticketId)}
                   title="Remove from cluster"
                   disabled={isProcessing}
@@ -173,12 +185,12 @@ export function ClusterDetail({
 
       {/* Actions */}
       {isPending && (
-        <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
+        <div className="border-t border-navy-200 bg-navy-50 px-6 py-4 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)]">
           <div className="flex items-center justify-end gap-3">
             <button
               onClick={handleDismiss}
               disabled={isProcessing}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border border-navy-300 bg-white px-4 py-2 text-sm font-medium text-navy-700 hover:bg-navy-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:text-[var(--color-text-secondary)] dark:hover:bg-[var(--color-surface-alt)]"
             >
               Dismiss Cluster
             </button>
@@ -196,8 +208,8 @@ export function ClusterDetail({
 
       {/* Dismissed info */}
       {cluster.status === 'dismissed' && (
-        <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
-          <p className="text-sm text-gray-600">
+        <div className="border-t border-navy-200 bg-navy-50 px-6 py-4 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)]">
+          <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
             <span className="font-medium">Dismissed</span>
           </p>
         </div>

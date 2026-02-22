@@ -40,10 +40,7 @@ export async function listClusters(params: ClusterListParams): Promise<Paginated
 /**
  * Get cluster by ID with full ticket details.
  */
-export async function getCluster(
-  clusterId: string,
-  month?: string
-): Promise<ClusterDetail> {
+export async function getCluster(clusterId: string, month?: string): Promise<ClusterDetail> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<ClusterDetail>(`/clusters/${clusterId}`, {

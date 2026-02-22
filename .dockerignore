@@ -32,7 +32,7 @@ docker-compose*.yaml
 
 # Documentation
 *.md
-docs/
+.rules/
 specs/
 
 # Tests (for production builds)

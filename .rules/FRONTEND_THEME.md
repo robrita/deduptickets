@@ -254,11 +254,49 @@ Available exports: `statusStyles`, `priorityStyles`, `severityStyles`, `confiden
 3. **Import from `theme/colors.ts`** for status/priority/severity badges — do not duplicate maps in components.
 4. **Semantic colors stay semantic** — red for danger, amber for warning, green for success.
 5. **Dashboard stat cards** use blue-shifted complementary hues (`stat.blue`, `stat.teal`, `stat.violet`, `stat.emerald`).
-6. **CSS custom properties** in `:root` (`--color-primary`, `--color-surface`, etc.) are available for edge cases outside Tailwind.
+6. **CSS custom properties** in `:root` and `:root.dark` (`--color-primary`, `--color-surface`, etc.) are available for edge cases outside Tailwind.
+7. **Every element must include `dark:` variants** — light-only styling is incomplete. See the Dark Mode section below.
+
+## Dark Mode
+
+The app supports **light and dark mode** via Tailwind's `darkMode: "class"` strategy. Every frontend change **must** include `dark:` variants for full compatibility.
+
+### How It Works
+
+| Layer | Mechanism |
+|-------|-----------|
+| Toggle | `useTheme()` hook (`frontend/src/hooks/useTheme.ts`) adds/removes `.dark` on `<html>` |
+| Persistence | `localStorage` key `deduptickets-theme`; falls back to OS `prefers-color-scheme` |
+| FOUC prevention | Inline `<script>` in `index.html <head>` applies theme before React hydrates |
+| CSS variables | `:root` and `:root.dark` in `index.css` define `--color-surface`, `--color-text`, `--color-border`, etc. |
+| Component classes | `.btn-*`, `.card`, `.badge-*`, `.stat-card-*` already include `dark:` variants |
+| UI control | `<ThemeToggle />` in the app header (sun/moon icon) |
+
+### Dark Mode Rules
+
+1. **Every visible element must have a `dark:` variant.** When you add `bg-white`, also add `dark:bg-[var(--color-surface-card)]`. When you add `text-navy-900`, also add `dark:text-[var(--color-text)]`.
+2. **Use CSS custom properties for dark values** — prefer `dark:bg-[var(--color-surface)]` over hardcoded colors like `dark:bg-gray-900`.
+3. **Borders must adapt** — pair `border-navy-200` with `dark:border-[var(--color-border)]`.
+4. **Badge maps in `theme/colors.ts` must include `dark:` variants** — e.g., `'bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'`.
+5. **Test both modes** — visually verify new components in light and dark before marking work done.
+
+### Common Dark Variant Patterns
+
+```
+Light                          → Dark
+bg-white                       → dark:bg-[var(--color-surface-card)]
+bg-navy-50                     → dark:bg-[var(--color-surface-alt)]
+text-navy-900                  → dark:text-[var(--color-text)]
+text-navy-600                  → dark:text-[var(--color-text-muted)]
+border-navy-200                → dark:border-[var(--color-border)]
+divide-navy-200                → dark:divide-[var(--color-border)]
+hover:bg-navy-50               → dark:hover:bg-white/5
+ring-navy-200                  → dark:ring-[var(--color-border)]
+```
 
 ## Changing the Theme
 
 To rebrand, update these files only:
 1. `frontend/tailwind.config.js` — change the `primary` color scale
-2. `frontend/src/index.css` — update `:root` CSS custom properties
+2. `frontend/src/index.css` — update `:root` and `:root.dark` CSS custom properties
 3. No component files need to change (they should reference tokens and shared classes)

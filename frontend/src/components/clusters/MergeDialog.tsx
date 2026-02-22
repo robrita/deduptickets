@@ -48,12 +48,14 @@ export function MergeDialog({
   if (!selectedMember) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+      <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-[var(--color-surface-card)]">
         {/* Header */}
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-900">Confirm Merge</h2>
-          <p className="mt-1 text-sm text-gray-500">
+        <div className="border-b border-navy-200 px-6 py-4 dark:border-[var(--color-border)]">
+          <h2 className="text-lg font-semibold text-navy-900 dark:text-[var(--color-text)]">
+            Confirm Merge
+          </h2>
+          <p className="mt-1 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
             Merge {members.length} tickets into a single primary ticket
           </p>
         </div>
@@ -62,35 +64,41 @@ export function MergeDialog({
         <div className="px-6 py-4">
           {/* Primary ticket */}
           <div className="mb-6">
-            <h3 className="mb-2 text-sm font-medium text-gray-700">
+            <h3 className="mb-2 text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]">
               Primary Ticket (will be kept)
             </h3>
-            <div className="rounded-lg border border-green-500 bg-green-50 p-3">
+            <div className="rounded-lg border border-green-500 bg-green-50 p-3 dark:bg-green-900/30">
               <div className="flex items-center gap-2">
-                <h4 className="truncate font-medium text-gray-900">
+                <h4 className="truncate font-medium text-navy-900 dark:text-[var(--color-text)]">
                   {selectedMember.summary || 'No summary'}
                 </h4>
                 <span className="flex-shrink-0 rounded bg-green-500 px-1.5 py-0.5 text-xs font-medium text-white">
                   Primary
                 </span>
               </div>
-              <p className="mt-1 text-xs text-gray-500">{selectedMember.ticketNumber}</p>
+              <p className="mt-1 text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
+                {selectedMember.ticketNumber}
+              </p>
             </div>
           </div>
 
           {/* Duplicates */}
           <div className="mb-6">
-            <h3 className="mb-2 text-sm font-medium text-gray-700">
+            <h3 className="mb-2 text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]">
               Duplicates ({otherMembers.length} tickets will be merged)
             </h3>
             <div className="max-h-40 space-y-2 overflow-y-auto">
               {otherMembers.map(member => (
                 <div
                   key={member.ticketId}
-                  className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                  className="rounded-md border border-navy-200 bg-navy-50 px-3 py-2 text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)]"
                 >
-                  <p className="font-medium text-gray-900">{member.summary || 'No summary'}</p>
-                  <p className="text-xs text-gray-500">{member.ticketNumber}</p>
+                  <p className="font-medium text-navy-900 dark:text-[var(--color-text)]">
+                    {member.summary || 'No summary'}
+                  </p>
+                  <p className="text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
+                    {member.ticketNumber}
+                  </p>
                 </div>
               ))}
             </div>
@@ -98,15 +106,17 @@ export function MergeDialog({
 
           {/* Merge behavior */}
           <div>
-            <h3 className="mb-2 text-sm font-medium text-gray-700">Merge Behavior</h3>
+            <h3 className="mb-2 text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]">
+              Merge Behavior
+            </h3>
             <div className="space-y-2">
               {mergeBehaviorOptions.map(option => (
                 <label
                   key={option.value}
                   className={`flex cursor-pointer items-start rounded-lg border p-3 transition-colors ${
                     behavior === option.value
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                      : 'border-navy-200 hover:border-navy-300 dark:border-[var(--color-border)] dark:hover:border-[var(--color-border-light)]'
                   }`}
                 >
                   <input
@@ -118,8 +128,12 @@ export function MergeDialog({
                     className="mt-0.5"
                   />
                   <div className="ml-3">
-                    <p className="font-medium text-gray-900">{option.label}</p>
-                    <p className="text-sm text-gray-500">{option.description}</p>
+                    <p className="font-medium text-navy-900 dark:text-[var(--color-text)]">
+                      {option.label}
+                    </p>
+                    <p className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+                      {option.description}
+                    </p>
                   </div>
                 </label>
               ))}
@@ -128,12 +142,8 @@ export function MergeDialog({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
-          <button
-            onClick={onCancel}
-            disabled={isLoading}
-            className="btn-secondary"
-          >
+        <div className="flex items-center justify-end gap-3 border-t border-navy-200 bg-navy-50 px-6 py-4 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)]">
+          <button onClick={onCancel} disabled={isLoading} className="btn-secondary">
             Cancel
           </button>
           <button
@@ -141,9 +151,7 @@ export function MergeDialog({
             disabled={isLoading}
             className="btn-primary flex items-center gap-2"
           >
-            {isLoading && (
-              <div className="spinner-sm" />
-            )}
+            {isLoading && <div className="spinner-sm" />}
             Confirm Merge
           </button>
         </div>

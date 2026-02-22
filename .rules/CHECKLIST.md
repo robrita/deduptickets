@@ -53,5 +53,5 @@ Before marking any task as complete, verify every applicable item:
 
 ## Agent Interaction
 
-- [ ] New rules added to AGENTS.md follow the map pattern (one-liner + pointer to `docs/` topic file)
+- [ ] New rules added to AGENTS.md follow the map pattern (one-liner + pointer to `.rules/` topic file)
 - [ ] Clarifying questions use plain text with numbered options (no checkbox/radio UI)

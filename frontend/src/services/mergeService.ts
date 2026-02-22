@@ -21,10 +21,7 @@ export interface RevertRequest {
 /**
  * Create a new merge operation.
  */
-export async function createMerge(
-  request: MergeRequest,
-  month?: string
-): Promise<MergeOperation> {
+export async function createMerge(request: MergeRequest, month?: string): Promise<MergeOperation> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.post<MergeOperation>('/merges', request, {
@@ -57,10 +54,7 @@ export async function listMerges(
 /**
  * Get merge operation by ID.
  */
-export async function getMerge(
-  mergeId: string,
-  month?: string
-): Promise<MergeOperation> {
+export async function getMerge(mergeId: string, month?: string): Promise<MergeOperation> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<MergeOperation>(`/merges/${mergeId}`, {

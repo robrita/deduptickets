@@ -49,9 +49,11 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="modal-panel relative max-w-lg p-0">
           {/* Header */}
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h2 className="text-lg font-semibold text-gray-900">Revert Merge Operation</h2>
-            <p className="mt-1 text-sm text-gray-500">
+          <div className="border-b border-navy-200 px-6 py-4 dark:border-[var(--color-border)]">
+            <h2 className="text-lg font-semibold text-navy-900 dark:text-[var(--color-text)]">
+              Revert Merge Operation
+            </h2>
+            <p className="mt-1 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
               This will restore {merge.secondaryTicketIds.length} tickets to their original state.
             </p>
           </div>
@@ -60,20 +62,34 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
             {/* Body */}
             <div className="px-6 py-4 space-y-4">
               {/* Merge details */}
-              <div className="rounded-md bg-gray-50 p-4">
-                <h3 className="text-sm font-medium text-gray-700">Merge Details</h3>
+              <div className="rounded-md bg-navy-50 p-4 dark:bg-[var(--color-surface-alt)]">
+                <h3 className="text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]">
+                  Merge Details
+                </h3>
                 <dl className="mt-2 space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <dt className="text-gray-500">Performed by:</dt>
-                    <dd className="text-gray-900">{merge.performedBy}</dd>
+                    <dt className="text-navy-600 dark:text-[var(--color-text-secondary)]">
+                      Performed by:
+                    </dt>
+                    <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                      {merge.performedBy}
+                    </dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-500">Performed at:</dt>
-                    <dd className="text-gray-900">{formatDate(merge.performedAt)}</dd>
+                    <dt className="text-navy-600 dark:text-[var(--color-text-secondary)]">
+                      Performed at:
+                    </dt>
+                    <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                      {formatDate(merge.performedAt)}
+                    </dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-gray-500">Tickets merged:</dt>
-                    <dd className="text-gray-900">{merge.secondaryTicketIds.length}</dd>
+                    <dt className="text-navy-600 dark:text-[var(--color-text-secondary)]">
+                      Tickets merged:
+                    </dt>
+                    <dd className="text-navy-900 dark:text-[var(--color-text)]">
+                      {merge.secondaryTicketIds.length}
+                    </dd>
                   </div>
                 </dl>
               </div>
@@ -103,14 +119,17 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
 
               {/* Reason input */}
               <div>
-                <label htmlFor="revert-reason" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="revert-reason"
+                  className="block text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]"
+                >
                   Reason for revert
                 </label>
                 <textarea
                   id="revert-reason"
                   name="reason"
                   rows={3}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-navy-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)] dark:text-[var(--color-text)]"
                   placeholder="Optional: Explain why this merge is being reverted..."
                   value={reason}
                   onChange={e => setReason(e.target.value)}
@@ -125,7 +144,7 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 px-6 py-4 flex justify-end gap-3">
+            <div className="border-t border-navy-200 px-6 py-4 flex justify-end gap-3 dark:border-[var(--color-border)]">
               <button
                 type="button"
                 onClick={onCancel}
@@ -134,11 +153,7 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="btn-warning"
-              >
+              <button type="submit" disabled={isLoading} className="btn-warning">
                 {isLoading ? (
                   <span className="flex items-center">
                     <span className="spinner-sm mr-2" />

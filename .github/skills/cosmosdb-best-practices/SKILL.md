@@ -143,4 +143,4 @@ Each rule file contains:
 
 For the complete Cosmos DB guide with all rules expanded: `AGENTS.md` (in this skill directory).
 
-For project-wide agent guidelines, see the root `AGENTS.md` which serves as a map to topic docs in `docs/`.
+For project-wide agent guidelines, see the root `AGENTS.md` which serves as a map to topic docs in `.rules/`.

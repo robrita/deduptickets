@@ -57,7 +57,6 @@ export function TicketsPage({ month }: TicketsPageProps) {
     selectTicket(null);
   }, [selectTicket]);
 
-
   const handleStatusChange = useCallback(
     (status: string) => {
       setFilters({ ...filters, status: status ? (status as TicketStatus) : undefined });
@@ -70,23 +69,28 @@ export function TicketsPage({ month }: TicketsPageProps) {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="page-title">Tickets</h1>
         {pagination && (
-          <span className="helper-text text-gray-600">{pagination.total} total tickets</span>
+          <span className="helper-text text-navy-600 dark:text-[var(--color-text-secondary)]">
+            {pagination.total} total tickets
+          </span>
         )}
       </div>
 
       {/* Filters */}
-      <div className="mb-6 rounded-lg bg-gray-50 p-4">
+      <div className="mb-6 rounded-lg bg-navy-50 p-4 dark:bg-[var(--color-surface-alt)]">
         <div className="flex flex-wrap items-center gap-4">
           {/* Status Filter */}
           <div className="flex items-center gap-2">
-            <label htmlFor="status" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="status"
+              className="text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]"
+            >
               Status:
             </label>
             <select
               id="status"
               value={filters.status || ''}
               onChange={e => handleStatusChange(e.target.value)}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              className="rounded-lg border border-navy-300 px-3 py-2 text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:text-[var(--color-text)]"
             >
               <option value="">All</option>
               {STATUSES.map(status => (
@@ -103,9 +107,11 @@ export function TicketsPage({ month }: TicketsPageProps) {
               type="checkbox"
               checked={filters.unassigned_only || false}
               onChange={e => setFilters({ ...filters, unassigned_only: e.target.checked })}
-              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              className="rounded border-navy-300 text-primary-600 focus:ring-primary-500 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)]"
             />
-            <span className="text-gray-700">Unassigned only</span>
+            <span className="text-navy-700 dark:text-[var(--color-text-secondary)]">
+              Unassigned only
+            </span>
           </label>
         </div>
       </div>
@@ -133,7 +139,7 @@ export function TicketsPage({ month }: TicketsPageProps) {
           >
             Previous
           </button>
-          <span className="helper-text text-gray-600">
+          <span className="helper-text text-navy-600 dark:text-[var(--color-text-secondary)]">
             Page {page} of {totalPages}
           </span>
           <button
@@ -149,7 +155,7 @@ export function TicketsPage({ month }: TicketsPageProps) {
               setPage(1);
               // Note: setPageSize would need to be exposed from useTickets if we want this
             }}
-            className="ml-4 rounded-md border border-gray-300 px-2 py-1 text-sm"
+            className="ml-4 rounded-md border border-navy-300 px-2 py-1 text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:text-[var(--color-text)]"
             disabled
           >
             <option value={20}>20 / page</option>

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Run all mandatory quality gates on changed backend files. Fix every failure before reporting results. Reference: [docs/QUALITY_GATES.md](../../docs/QUALITY_GATES.md), [docs/CHECKLIST.md](../../docs/CHECKLIST.md).
+Run all mandatory quality gates on changed backend files. Fix every failure before reporting results. Reference: [.rules/QUALITY_GATES.md](../../.rules/QUALITY_GATES.md), [.rules/CHECKLIST.md](../../.rules/CHECKLIST.md).
 
 ---
 

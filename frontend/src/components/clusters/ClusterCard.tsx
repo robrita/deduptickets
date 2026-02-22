@@ -39,10 +39,10 @@ export function ClusterCard({ cluster, isSelected = false, onClick, onDismiss }:
   return (
     <div
       className={`card-hover transition-all ${
-        isSelected ? 'border-primary-400 ring-2 ring-primary-100' : 'border-gray-200'
-      } ${
-        onClick ? 'cursor-pointer' : ''
-      }`}
+        isSelected
+          ? 'border-primary-400 ring-2 ring-primary-100 dark:ring-primary-900/40'
+          : 'border-navy-200 dark:border-[var(--color-border)]'
+      } ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick ? handleClick : undefined}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -52,20 +52,24 @@ export function ClusterCard({ cluster, isSelected = false, onClick, onDismiss }:
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-lg font-semibold text-gray-900">{cluster.ticketCount} Tickets</h3>
+            <h3 className="text-lg font-semibold text-navy-900 dark:text-[var(--color-text)]">
+              {cluster.ticketCount} Tickets
+            </h3>
             <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles[cluster.status] || 'bg-gray-100 text-gray-800'}`}
+              className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles[cluster.status] || 'bg-navy-100 text-navy-800 dark:bg-navy-800 dark:text-navy-200'}`}
             >
               {cluster.status}
             </span>
           </div>
 
-          <p className="mt-1 text-sm text-gray-600 line-clamp-2">{cluster.summary}</p>
+          <p className="mt-1 text-sm text-navy-600 line-clamp-2 dark:text-[var(--color-text-secondary)]">
+            {cluster.summary}
+          </p>
         </div>
 
         {cluster.status === 'pending' && onDismiss && (
           <button
-            className="ml-auto shrink-0 self-start rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="ml-auto shrink-0 self-start rounded-md border border-navy-300 bg-white px-3 py-1 text-sm font-medium text-navy-700 hover:bg-navy-50 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:text-[var(--color-text-secondary)] dark:hover:bg-[var(--color-surface-alt)]"
             onClick={handleDismiss}
           >
             Dismiss
@@ -73,7 +77,7 @@ export function ClusterCard({ cluster, isSelected = false, onClick, onDismiss }:
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-3 flex items-center justify-between text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
         <span>Created {formatDate(cluster.createdAt)}</span>
         <span className="font-mono">{cluster.id.slice(0, 8)}...</span>
       </div>

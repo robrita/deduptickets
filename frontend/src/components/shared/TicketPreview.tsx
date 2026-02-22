@@ -46,10 +46,10 @@ export function TicketPreview({
     <div
       className={`rounded-lg border p-3 transition-colors ${
         isSelected
-          ? 'border-primary-500 bg-primary-50'
+          ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
           : isCanonical
-            ? 'border-green-500 bg-green-50'
-            : 'border-gray-200 bg-white hover:border-gray-300'
+            ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+            : 'border-navy-200 bg-white hover:border-navy-300 dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)] dark:hover:border-[var(--color-border-light)]'
       } ${onSelect ? 'cursor-pointer' : ''}`}
       onClick={handleClick}
       role={onSelect ? 'button' : undefined}
@@ -59,7 +59,9 @@ export function TicketPreview({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h4 className="truncate font-medium text-gray-900">{ticket.summary}</h4>
+            <h4 className="truncate font-medium text-navy-900 dark:text-[var(--color-text)]">
+              {ticket.summary}
+            </h4>
             {isCanonical && (
               <span className="flex-shrink-0 rounded bg-green-500 px-1.5 py-0.5 text-xs font-medium text-white">
                 Primary
@@ -67,13 +69,15 @@ export function TicketPreview({
             )}
           </div>
 
-          <p className="mt-1 line-clamp-2 text-sm text-gray-600">{ticket.description}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+            {ticket.description}
+          </p>
 
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
             {ticket.severity && (
               <>
                 <span
-                  className={`rounded px-1.5 py-0.5 ${severityStyles[ticket.severity] || 'bg-gray-100 text-gray-700'}`}
+                  className={`rounded px-1.5 py-0.5 ${severityStyles[ticket.severity] || 'bg-navy-100 text-navy-700 dark:bg-navy-800 dark:text-navy-300'}`}
                 >
                   {severityLabels[ticket.severity] || ticket.severity}
                 </span>

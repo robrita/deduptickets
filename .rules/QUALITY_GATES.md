@@ -55,7 +55,7 @@ Quick combined check: `make frontend-ci`
 
 ### Frontend Theme Rules
 
-See [docs/FRONTEND_THEME.md](FRONTEND_THEME.md) for the full guide. Key enforcement points:
+See [.rules/FRONTEND_THEME.md](FRONTEND_THEME.md) for the full guide. Key enforcement points:
 
 - **No hardcoded `blue-*` or `indigo-*`** for brand/interactive colors — use `primary-*` tokens.
 - **Use component classes** (`.btn-primary`, `.card`, etc.) before writing custom Tailwind utilities.

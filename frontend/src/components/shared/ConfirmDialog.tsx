@@ -23,17 +23,17 @@ export interface ConfirmDialogProps {
 const variantStyles = {
   danger: {
     icon: 'text-red-400',
-    iconBg: 'bg-red-100',
+    iconBg: 'bg-red-100 dark:bg-red-900/40',
     button: 'btn-danger',
   },
   warning: {
     icon: 'text-amber-400',
-    iconBg: 'bg-amber-100',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/40',
     button: 'btn-warning',
   },
   default: {
     icon: 'text-primary-400',
-    iconBg: 'bg-primary-100',
+    iconBg: 'bg-primary-100 dark:bg-primary-900/40',
     button: 'btn-primary',
   },
 };
@@ -78,8 +78,16 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           <div className="px-6 py-5">
             <div className="flex items-start gap-4">
               {/* Icon */}
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${styles.iconBg}`}>
-                <svg className={`h-6 w-6 ${styles.icon}`} fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${styles.iconBg}`}
+              >
+                <svg
+                  className={`h-6 w-6 ${styles.icon}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -90,18 +98,25 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
               {/* Content */}
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-                <p className="mt-2 text-sm text-gray-600">{message}</p>
+                <h3 className="text-lg font-semibold text-navy-900 dark:text-[var(--color-text)]">
+                  {title}
+                </h3>
+                <p className="mt-2 text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+                  {message}
+                </p>
 
                 {reasonLabel && (
                   <div className="mt-4">
-                    <label htmlFor="confirm-reason" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="confirm-reason"
+                      className="block text-sm font-medium text-navy-700 dark:text-[var(--color-text-secondary)]"
+                    >
                       {reasonLabel}
                     </label>
                     <textarea
                       id="confirm-reason"
                       rows={2}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                      className="mt-1 block w-full rounded-md border-navy-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:border-[var(--color-border)] dark:bg-[var(--color-surface-alt)] dark:text-[var(--color-text)]"
                       placeholder={reasonPlaceholder}
                       value={reason}
                       onChange={e => setReason(e.target.value)}
@@ -113,7 +128,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-200 px-6 py-4 flex justify-end gap-3">
+          <div className="border-t border-navy-200 px-6 py-4 flex justify-end gap-3 dark:border-[var(--color-border)]">
             <button
               type="button"
               onClick={handleCancel}

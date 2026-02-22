@@ -59,7 +59,7 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
   };
 
   return (
-    <div className="card-hover !p-4 !border-gray-200">
+    <div className="card-hover !p-4 !border-navy-200 dark:!border-[var(--color-border)]">
       <div className="flex items-start justify-between">
         {/* Left side: merge info */}
         <div className="flex-1 min-w-0">
@@ -71,22 +71,24 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
             >
               {mergeStatusLabels[merge.status] || merge.status}
             </span>
-            <span className="text-sm text-gray-500">{formatRelativeTime(merge.performedAt)}</span>
+            <span className="text-sm text-navy-600 dark:text-[var(--color-text-secondary)]">
+              {formatRelativeTime(merge.performedAt)}
+            </span>
           </div>
 
           <div className="mt-2">
-            <p className="text-sm text-gray-900">
+            <p className="text-sm text-navy-900 dark:text-[var(--color-text)]">
               <span className="font-medium">{merge.performedBy}</span> merged{' '}
               <span className="font-medium">{merge.secondaryTicketIds.length} tickets</span>
             </p>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
               Primary ticket: {merge.primaryTicketId.slice(0, 8)}...
             </p>
           </div>
 
           {/* Reverted info */}
           {merge.status === 'reverted' && merge.revertedBy && (
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-navy-600 dark:text-[var(--color-text-secondary)]">
               <p>
                 Reverted by {merge.revertedBy}
                 {merge.revertedAt && ` on ${formatDate(merge.revertedAt)}`}
@@ -98,7 +100,9 @@ export const MergeHistoryItem: React.FC<MergeHistoryItemProps> = ({
           {/* Revert deadline */}
           {merge.status === 'completed' && merge.revertDeadline && (
             <div className="mt-2">
-              <p className={`text-xs ${isRevertable() ? 'text-gray-500' : 'text-red-600'}`}>
+              <p
+                className={`text-xs ${isRevertable() ? 'text-navy-600 dark:text-[var(--color-text-secondary)]' : 'text-red-600 dark:text-red-400'}`}
+              >
                 {isRevertable() ? (
                   <>
                     <svg

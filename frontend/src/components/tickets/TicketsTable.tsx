@@ -22,7 +22,7 @@ function SortIcon({ active, order }: { active: boolean; order: 'asc' | 'desc' })
   if (!active) {
     return (
       <svg
-        className="ml-1 inline h-4 w-4 text-gray-400"
+        className="ml-1 inline h-4 w-4 text-navy-600 dark:text-[var(--color-text-secondary)]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -38,7 +38,7 @@ function SortIcon({ active, order }: { active: boolean; order: 'asc' | 'desc' })
   }
   return order === 'asc' ? (
     <svg
-      className="ml-1 inline h-4 w-4 text-primary-600"
+      className="ml-1 inline h-4 w-4 text-primary-600 dark:text-primary-400"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -47,7 +47,7 @@ function SortIcon({ active, order }: { active: boolean; order: 'asc' | 'desc' })
     </svg>
   ) : (
     <svg
-      className="ml-1 inline h-4 w-4 text-primary-600"
+      className="ml-1 inline h-4 w-4 text-primary-600 dark:text-primary-400"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -92,30 +92,32 @@ export function TicketsTable({
     return (
       <div className="flex items-center justify-center py-12">
         <div className="spinner" />
-        <span className="ml-3 text-gray-600">Loading tickets...</span>
+        <span className="ml-3 text-navy-600 dark:text-[var(--color-text-secondary)]">
+          Loading tickets...
+        </span>
       </div>
     );
   }
 
   if (tickets.length === 0) {
     return (
-      <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-        <p className="text-gray-500">No tickets found</p>
+      <div className="rounded-lg border-2 border-dashed border-navy-300 p-12 text-center dark:border-[var(--color-border)]">
+        <p className="text-navy-600 dark:text-[var(--color-text-secondary)]">No tickets found</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto rounded-lg border border-navy-200 dark:border-[var(--color-border)]">
+      <table className="min-w-full divide-y divide-navy-200 dark:divide-[var(--color-border)]">
+        <thead className="bg-navy-50 dark:bg-[var(--color-surface-alt)]">
           <tr>
             {columns.map(col => (
               <th
                 key={col.key}
                 scope="col"
-                className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 ${
-                  col.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-navy-600 dark:text-[var(--color-text-tertiary)] ${
+                  col.sortable ? 'cursor-pointer hover:bg-navy-100 dark:hover:bg-navy-800' : ''
                 }`}
                 onClick={() => handleHeaderClick(col.key)}
               >
@@ -127,45 +129,41 @@ export function TicketsTable({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
+        <tbody className="divide-y divide-navy-100 bg-white dark:divide-[var(--color-border-light)] dark:bg-[var(--color-surface-card)]">
           {tickets.map(ticket => (
             <tr
               key={ticket.id}
               onClick={() => onRowClick(ticket.id)}
-              className="cursor-pointer hover:bg-gray-50"
+              className="cursor-pointer hover:bg-navy-50 dark:hover:bg-[var(--color-surface-alt)]"
             >
-              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-900">
+              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-navy-900 dark:text-[var(--color-text)]">
                 {ticket.ticketNumber}
               </td>
-              <td className="max-w-xs truncate px-4 py-3 text-sm text-gray-700">
+              <td className="max-w-xs truncate px-4 py-3 text-sm text-navy-700 dark:text-[var(--color-text-secondary)]">
                 {ticket.summary}
               </td>
               <td className="whitespace-nowrap px-4 py-3">
-                <span
-                  className={`badge ${statusStyles[ticket.status] || 'badge-neutral'}`}
-                >
+                <span className={`badge ${statusStyles[ticket.status] || 'badge-neutral'}`}>
                   {ticket.status.replace('_', ' ')}
                 </span>
               </td>
               <td className="whitespace-nowrap px-4 py-3">
                 {ticket.priority && (
-                  <span
-                    className={`badge ${priorityStyles[ticket.priority] || 'badge-neutral'}`}
-                  >
+                  <span className={`badge ${priorityStyles[ticket.priority] || 'badge-neutral'}`}>
                     {ticket.priority}
                   </span>
                 )}
               </td>
-              <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+              <td className="whitespace-nowrap px-4 py-3 text-sm text-navy-700 dark:text-[var(--color-text-secondary)]">
                 {formatDate(ticket.createdAt)}
               </td>
               <td className="whitespace-nowrap px-4 py-3 text-sm">
                 {ticket.clusterId ? (
-                  <span className="rounded bg-primary-100 px-2 py-1 text-xs text-primary-700">
+                  <span className="rounded bg-primary-100 px-2 py-1 text-xs text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
                     Assigned
                   </span>
                 ) : (
-                  <span className="text-gray-400">-</span>
+                  <span className="text-navy-600 dark:text-[var(--color-text-secondary)]">-</span>
                 )}
               </td>
             </tr>

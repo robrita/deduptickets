@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Lint the docs/ structure and AGENTS.md to enforce structural rules.
+"""Lint the .rules/ structure and AGENTS.md to enforce structural rules.
 
 Rules enforced:
 1. All file paths referenced in AGENTS.md exist
 2. AGENTS.md line count ≤ 120
-3. Every .md file in docs/ (top-level) is referenced from AGENTS.md
+3. Every .md file in .rules/ (top-level) is referenced from AGENTS.md
 4. No **CRITICAL** markers in AGENTS.md (they belong in topic docs)
 
 Usage:
@@ -24,7 +24,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 AGENTS_MD = REPO_ROOT / "AGENTS.md"
-DOCS_DIR = REPO_ROOT / "docs"
+DOCS_DIR = REPO_ROOT / ".rules"
 MAX_AGENTS_LINES = 120
 
 
@@ -34,7 +34,7 @@ def check_agents_line_count(agents_text: str) -> list[str]:
     if len(lines) > MAX_AGENTS_LINES:
         return [
             f"AGENTS.md has {len(lines)} lines (max {MAX_AGENTS_LINES}). "
-            f"Move detailed content to a topic doc in docs/ and keep AGENTS.md as a short map."
+            f"Move detailed content to a topic doc in .rules/ and keep AGENTS.md as a short map."
         ]
     return []
 
@@ -46,7 +46,7 @@ def check_no_critical_markers(agents_text: str) -> list[str]:
         if "**CRITICAL**" in line:
             errors.append(
                 f"AGENTS.md line {i}: Found **CRITICAL** marker. "
-                f"Move this rule to the appropriate docs/ topic file and replace with a one-liner pointer."
+                f"Move this rule to the appropriate .rules/ topic file and replace with a one-liner pointer."
             )
     return errors
 
@@ -70,18 +70,18 @@ def check_referenced_files_exist(agents_text: str) -> list[str]:
 
 
 def check_orphaned_docs(agents_text: str) -> list[str]:
-    """Every top-level .md file in docs/ must be referenced from AGENTS.md."""
+    """Every top-level .md file in .rules/ must be referenced from AGENTS.md."""
     errors: list[str] = []
     if not DOCS_DIR.is_dir():
         return [
-            "docs/ directory does not exist. "
+            ".rules/ directory does not exist. "
             "Create it and move detailed rules from AGENTS.md into topic files."
         ]
     for md_file in sorted(DOCS_DIR.glob("*.md")):
         relative = md_file.relative_to(REPO_ROOT).as_posix()
         if relative not in agents_text:
             errors.append(
-                f"'{relative}' exists in docs/ but is not referenced from AGENTS.md. "
+                f"'{relative}' exists in .rules/ but is not referenced from AGENTS.md. "
                 f"Add a pointer in the navigation table or remove the orphaned file."
             )
     return errors
@@ -94,7 +94,7 @@ _WHITELISTED_SECTIONS = {"Critical Rules", "Self-Governance Rules", "Navigation"
 def check_no_inline_rules(agents_text: str) -> list[str]:
     """Sections in AGENTS.md must not contain more than 2 bullet/numbered items.
 
-    The "map-not-encyclopedia" rule means detailed content belongs in docs/.
+    The "map-not-encyclopedia" rule means detailed content belongs in .rules/.
     Sections that are intentionally indexed lists of one-liner pointers are whitelisted.
     """
     errors: list[str] = []
@@ -110,7 +110,7 @@ def check_no_inline_rules(agents_text: str) -> list[str]:
             if current_section and current_section not in _WHITELISTED_SECTIONS and item_count > 2:
                 errors.append(
                     f"AGENTS.md section '{current_section}' has {item_count} inline items (max 2). "
-                    f"Move detailed content to a topic doc in docs/ and replace with a one-liner pointer."
+                    f"Move detailed content to a topic doc in .rules/ and replace with a one-liner pointer."
                 )
             current_section = heading_match.group(1).strip()
             item_count = 0
@@ -121,7 +121,7 @@ def check_no_inline_rules(agents_text: str) -> list[str]:
     if current_section and current_section not in _WHITELISTED_SECTIONS and item_count > 2:
         errors.append(
             f"AGENTS.md section '{current_section}' has {item_count} inline items (max 2). "
-            f"Move detailed content to a topic doc in docs/ and replace with a one-liner pointer."
+            f"Move detailed content to a topic doc in .rules/ and replace with a one-liner pointer."
         )
 
     return errors
@@ -146,8 +146,8 @@ def main() -> int:
         for error in all_errors:
             print(f"  ✗ {error}")
         print(
-            "\nRemediation: AGENTS.md should be a short map (~100 lines) pointing to topic docs in docs/. "
-            "Move detailed rules to the appropriate docs/ file."
+            "\nRemediation: AGENTS.md should be a short map (~100 lines) pointing to topic docs in .rules/. "
+            "Move detailed rules to the appropriate .rules/ file."
         )
         return 1
 

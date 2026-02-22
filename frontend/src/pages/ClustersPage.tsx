@@ -88,22 +88,18 @@ export function ClustersPage({ month }: ClustersPageProps) {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="page-title">Duplicate Clusters</h1>
-          <p className="page-subtitle">
-            Review and merge duplicate support tickets
-          </p>
+          <p className="page-subtitle">Review and merge duplicate support tickets</p>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="rounded-lg bg-yellow-100 px-4 py-2 text-center">
-            <p className="text-2xl font-bold text-yellow-800">{pendingCount}</p>
-            <p className="helper-text text-yellow-700">Pending Review</p>
+          <div className="rounded-lg bg-yellow-100 px-4 py-2 text-center dark:bg-yellow-900/40">
+            <p className="text-2xl font-bold text-yellow-800 dark:text-yellow-300">
+              {pendingCount}
+            </p>
+            <p className="helper-text text-yellow-700 dark:text-yellow-400">Pending Review</p>
           </div>
 
-          <button
-            onClick={refresh}
-            disabled={isLoading}
-            className="btn-secondary"
-          >
+          <button onClick={refresh} disabled={isLoading} className="btn-secondary">
             Refresh
           </button>
         </div>
@@ -122,43 +118,41 @@ export function ClustersPage({ month }: ClustersPageProps) {
       )}
 
       {/* Main content */}
-        <div className="flex gap-6 transition-all duration-200">
-          {/* Cluster list */}
-          <div
-            className={`transition-all duration-200 ${selectedCluster ? 'w-1/2' : 'w-full'}`}
-          >
-            <ClusterList
-              clusters={clusters}
-              isLoading={isLoading}
-              compact={Boolean(selectedCluster)}
-              selectedClusterId={selectedCluster?.id ?? null}
-              onClusterClick={handleClusterClick}
-              onDismiss={handleDismiss}
-              onFilterChange={handleFilterChange}
-            />
-          </div>
-
-          {/* Cluster detail panel */}
-          {selectedCluster && (
-            <div className="w-1/2 transition-all duration-200">
-              <div className="sticky top-6 rounded-lg border border-gray-200 bg-white shadow-lg">
-                {isLoadingDetail ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="spinner" />
-                  </div>
-                ) : (
-                  <ClusterDetail
-                    cluster={selectedCluster}
-                    onMerge={handleMerge}
-                    onDismiss={() => handleDismiss(selectedCluster.id)}
-                    onRemoveTicket={handleRemoveTicket}
-                    onClose={handleClose}
-                  />
-                )}
-              </div>
-            </div>
-          )}
+      <div className="flex gap-6 transition-all duration-200">
+        {/* Cluster list */}
+        <div className={`transition-all duration-200 ${selectedCluster ? 'w-1/2' : 'w-full'}`}>
+          <ClusterList
+            clusters={clusters}
+            isLoading={isLoading}
+            compact={Boolean(selectedCluster)}
+            selectedClusterId={selectedCluster?.id ?? null}
+            onClusterClick={handleClusterClick}
+            onDismiss={handleDismiss}
+            onFilterChange={handleFilterChange}
+          />
         </div>
+
+        {/* Cluster detail panel */}
+        {selectedCluster && (
+          <div className="w-1/2 transition-all duration-200">
+            <div className="sticky top-6 rounded-lg border border-navy-200 bg-white shadow-lg dark:border-[var(--color-border)] dark:bg-[var(--color-surface-card)]">
+              {isLoadingDetail ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="spinner" />
+                </div>
+              ) : (
+                <ClusterDetail
+                  cluster={selectedCluster}
+                  onMerge={handleMerge}
+                  onDismiss={() => handleDismiss(selectedCluster.id)}
+                  onRemoveTicket={handleRemoveTicket}
+                  onClose={handleClose}
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Dismiss confirmation dialog */}
       <ConfirmDialog

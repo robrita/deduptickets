@@ -43,10 +43,7 @@ export async function listTickets(params: TicketListParams): Promise<PaginatedRe
 /**
  * Get a single ticket by ID.
  */
-export async function getTicket(
-  ticketId: string,
-  month?: string
-): Promise<Ticket> {
+export async function getTicket(ticketId: string, month?: string): Promise<Ticket> {
   const currentMonth = month || new Date().toISOString().slice(0, 7);
 
   return api.get<Ticket>(`/tickets/${ticketId}`, {

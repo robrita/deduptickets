@@ -7,8 +7,7 @@
 import type { ApiError } from '../types';
 
 const API_BASE_URL =
-  (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_URL ||
-  '/api/v1';
+  (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_URL || '/api/v1';
 const API_KEY =
   (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_API_KEY ||
   'dev-api-key-change-in-production';
@@ -54,9 +53,7 @@ function buildUrl(
   params?: Record<string, string | number | boolean | undefined>
 ): string {
   const path = `${API_BASE_URL}${endpoint}`;
-  const url = path.startsWith('http')
-    ? new URL(path)
-    : new URL(path, window.location.origin);
+  const url = path.startsWith('http') ? new URL(path) : new URL(path, window.location.origin);
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
