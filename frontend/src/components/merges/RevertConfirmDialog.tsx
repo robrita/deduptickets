@@ -43,10 +43,10 @@ export const RevertConfirmDialog: React.FC<RevertConfirmDialogProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
-      <div className="modal-backdrop" onClick={onCancel} />
+      <div className="absolute inset-0 bg-navy-950/50 dark:bg-black/70" onClick={onCancel} />
 
       {/* Dialog */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="relative z-10 flex min-h-full items-center justify-center p-4">
         <div className="modal-panel relative max-w-lg p-0">
           {/* Header */}
           <div className="border-b border-navy-200 px-6 py-4 dark:border-[var(--color-border)]">

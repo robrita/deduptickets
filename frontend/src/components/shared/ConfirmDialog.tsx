@@ -70,10 +70,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
-      <div className="modal-backdrop" onClick={handleCancel} />
+      <div className="absolute inset-0 bg-navy-950/50 dark:bg-black/70" onClick={handleCancel} />
 
       {/* Dialog */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className="relative z-10 flex min-h-full items-center justify-center p-4">
         <div className="modal-panel relative max-w-md p-0">
           <div className="px-6 py-5">
             <div className="flex items-start gap-4">
